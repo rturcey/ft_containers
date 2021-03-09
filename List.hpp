@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/04 09:32:26 by rturcey           #+#    #+#             */
-/*   Updated: 2021/03/04 15:18:34 by rturcey          ###   ########.fr       */
+/*   Updated: 2021/03/09 10:22:51 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include "Element.hpp"
 #include "ReverseIterator.hpp"
+#include "Utils.hpp"
 
 namespace	ft
 {
@@ -40,7 +41,7 @@ namespace	ft
 			ListIterator(ListIterator const &src) : ptr(src.ptr) {}
 			virtual			~ListIterator() {}
 
-			elt				*get_ptr(void)
+			elt				*get_ptr(void) const
 			{
 				return (this->ptr);
 			}
@@ -74,7 +75,10 @@ namespace	ft
 			{
 				return (this->ptr);
 			}
-
+			const_reference		operator*() const
+			{
+				return (this->ptr->value());
+			}
 			bool		operator==(ListIterator const &rhs) const
 			{
 				return (this->ptr == rhs.ptr);
@@ -152,6 +156,12 @@ namespace	ft
 				this->_end->prev() = NULL;
 				this->_size = 0;
 			}
+			void		reset(void)
+			{
+				this->_begin = this->_end;
+				this->_end->next() = NULL;
+				this->_end->prev() = NULL;
+			}
 			iterator		insert(iterator position, const value_type& val)
 			{
 				if (position == this->begin())
@@ -214,16 +224,8 @@ namespace	ft
 			}
 			void			clear(void)
 			{
-				elt		*tmp;
-
-				while (this->_begin != this->_end)
-				{
-					tmp = this->_begin->next();
-					delete this->_begin;
-					this->_begin = tmp;
-				}
-				this->_begin = this->_end;
-				this->_end->prev() = NULL;
+				this->erase(this->begin(), this->end());
+				this->reset();
 			}
 			void			push_back(const T &value)
 			{
@@ -324,6 +326,197 @@ namespace	ft
 				else
 					this->insert(this->end(), n - this->size(), val);
 			}
+			template<class Compare>
+			void			merge(List &other, Compare comp)
+			{
+				if (*this == other)
+					return ;
+				iterator	it = this->begin();
+				iterator	itbis = other.begin();
+				while (itbis != other.end())
+				{
+					if (it == this->end())
+					{
+						splice(it, other);
+						return ;
+					}
+					else if (comp(*itbis, *it))
+					{
+						splice(it, other, itbis);
+						itbis = other.begin();
+					}
+					else
+						it++;
+				}
+			}
+			void			merge(List &other)
+			{
+				if (*this == other)
+					return ;
+				iterator	it = this->begin();
+				iterator	itbis = other.begin();
+				while (itbis != other.end())
+				{
+					if (it == this->end())
+					{
+						splice(it, other);
+						return ;
+					}
+					else if (*itbis < *it)
+					{
+						splice(it, other, itbis);
+						itbis = other.begin();
+					}
+					else
+						it++;
+				}
+			}
+			void			splice(iterator pos, List &other)
+			{
+				this->splice(pos, other, other.begin(), other.end());
+			}
+			void			splice(iterator pos, List &other, iterator it)
+			{
+				iterator	it2 = it;
+				++it2;
+				this->splice(pos, other, it, it2);
+			}
+			void			splice(iterator pos, List &other, iterator first, iterator last)
+			{
+				elt	*tmp;
+
+				while (first != last)
+				{
+					tmp = first++.get_ptr();
+					if (tmp == other._begin)
+						other._begin = tmp->next();
+					tmp->detach();
+					pos.get_ptr()->push_before(tmp);
+					if (pos.get_ptr() == this->_begin)
+						this->_begin = tmp;
+					this->_size++;
+					other._size--;
+				}
+				if (other._size == 0)
+					other.reset();
+			}
+			void			reverse(void)
+			{
+				iterator	it = this->begin();
+				iterator	itbis = this->end();
+				T			value;
+
+				--itbis;
+				for (size_t i = 0 ; i < _size / 2 ; i++)
+				{
+					value = *itbis;
+					itbis.get_ptr()->change_value(*it);
+					it.get_ptr()->change_value(value);
+					++it;
+					--itbis;
+				}
+			}
+			template<class Compare>
+			void sort(Compare comp)
+			{
+				int			lever = 0;
+				T			value;
+				iterator	it = this->begin();
+				iterator	itbis = it++;
+
+				while (it != this->end())
+				{
+					if (comp(*it, *itbis))
+					{
+						value = *itbis;
+						itbis.get_ptr()->change_value(*it);
+						it.get_ptr()->change_value(value);
+						lever = 1;
+					}
+					++it;
+					++itbis;
+				}
+				if (lever == 1)
+					this->sort(comp);
+			}
+			void			sort(void)
+			{
+				int			lever = 0;
+				T			value;
+				iterator	it = this->begin();
+				iterator	itbis = it++;
+
+				while (it != this->end())
+				{
+					if (*itbis > *it)
+					{
+						value = *itbis;
+						itbis.get_ptr()->change_value(*it);
+						it.get_ptr()->change_value(value);
+						lever = 1;
+					}
+					++it;
+					++itbis;
+				}
+				if (lever == 1)
+					this->sort();
+			}
+			void			unique(void)
+			{
+				iterator	it = this->_begin;
+				iterator	itbis = it++;
+
+				while (it != this->_end)
+				{
+					while (it != this->_end && *itbis == *it)
+						it = this->erase(it);
+					++itbis;
+					it = itbis;
+					if (it != this->_end)
+						++it;
+				}
+			}
+			template<class BinaryPredicate>
+			void			unique(BinaryPredicate p)
+			{
+				iterator	it = this->begin();
+				iterator	itbis = it++;
+
+				while (it != this->end())
+				{
+					while (it != this->end() && p(*it, *itbis))
+						it = this->erase(it);
+					++itbis;
+					it = itbis;
+					if (it != this->end())
+						++it;
+				}
+			}
+			template<class UnaryPredicate>
+			void			remove_if(UnaryPredicate p)
+			{
+				iterator		it = this->begin();
+
+				while (it != this->end())
+				{
+					if (p(*it))
+						it = this->erase(it);
+					else
+						++it;
+				}
+			}
+			void			remove(const T &value)
+			{
+				iterator		it = this->begin();
+
+				while (it != this->end())
+				{
+					if (*it == value)
+						it = this->erase(it);
+					else
+						++it;
+				}
+			}
 			T 				front(void)		const
 			{
 				return (this->_begin->value());
@@ -384,6 +577,75 @@ namespace	ft
 
 
 	};
+
+	template<typename T>
+	bool operator==(List<T> const &lhs, List<T> const &rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (0);
+		typename List<T>::const_iterator beg = lhs.begin();
+		typename List<T>::const_iterator itend = lhs.end();
+		typename List<T>::const_iterator beg2 = rhs.begin();
+		typename List<T>::const_iterator itend2 = rhs.end();
+		while (beg != itend)
+		{
+			if (*beg++ != *beg2++)
+				return (0);
+		}
+		return (1);
+	}
+	template<typename T>
+	bool operator!=(List<T> const &lhs, List<T> const &rhs)
+	{
+		if (lhs == rhs)
+			return (0);
+		return (1);
+	}
+	template<typename T>
+	bool operator<(List<T> const &lhs, List<T> const &rhs)
+	{
+		if (lhs.size() < rhs.size())
+			return (1);
+		else if (lhs.size() != rhs.size())
+			return (0);
+		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) == 1)
+			return (1);
+		return (0);
+	}
+	template<typename T>
+	bool operator>(List<T> const &lhs, List<T> const &rhs)
+	{
+		if (lhs.size() > rhs.size())
+			return (1);
+		else if (lhs.size() != rhs.size())
+			return (0);
+		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) == -1)
+			return (1);
+		return (0);
+	}
+	template<typename T>
+	bool operator>=(List<T> const &lhs, List<T> const &rhs)
+	{
+		if (lhs.size() >= rhs.size())
+			return (1);
+		else
+			return (0);
+		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) <= 0)
+			return (1);
+		return (0);
+	}
+		template<typename T>
+	bool operator<=(List<T> const &lhs, List<T> const &rhs)
+	{
+		if (lhs.size() <= rhs.size())
+			return (1);
+		else
+			return (0);
+		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) >= 0)
+			return (1);
+		return (0);
+	}
+
 }
 
 #endif

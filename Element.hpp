@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 09:05:58 by rturcey           #+#    #+#             */
-/*   Updated: 2021/03/04 15:17:20 by rturcey          ###   ########.fr       */
+/*   Updated: 2021/03/08 10:28:59 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ class	Element
 		}
 		void	detach(void)
 		{
-			if (this->prev())
-				this->prev()->next() = this->next();
-			if	(this->next())
-				this->next()->prev() =  this->prev();
+			if (this->_prev)
+				this->_prev->_next = this->_next;
+			if	(this->_next)
+				this->_next->_prev =  this->_prev;
 		}
 		void	push_before(Element *elt)
 		{
@@ -55,7 +55,19 @@ class	Element
 		{
 			return (this->_prev);
 		}
+		Element const	*next(void) const
+		{
+			return (this->_next);
+		}
+		Element	const	*prev(void) const
+		{
+			return (this->_prev);
+		}
 		T		&value(void)
+		{
+			return (this->_data);
+		}
+		T const	&value(void) const
 		{
 			return (this->_data);
 		}
