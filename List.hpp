@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/04 09:32:26 by rturcey           #+#    #+#             */
-/*   Updated: 2021/03/09 10:22:51 by rturcey          ###   ########.fr       */
+/*   Updated: 2021/03/15 11:48:06 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 namespace	ft
 {
 	template <typename T, typename E>
-	class	ListIterator
+	class	Iterator
 	{
 		public:
 			typedef T							value_type;
@@ -36,34 +36,34 @@ namespace	ft
 			elt			*ptr;
 
 		public:
-			ListIterator() : ptr(NULL) {}
-			ListIterator(elt *ptr) : ptr(ptr) {}
-			ListIterator(ListIterator const &src) : ptr(src.ptr) {}
-			virtual			~ListIterator() {}
+			Iterator() : ptr(NULL) {}
+			Iterator(elt *ptr) : ptr(ptr) {}
+			Iterator(Iterator const &src) : ptr(src.ptr) {}
+			virtual			~Iterator() {}
 
 			elt				*get_ptr(void) const
 			{
 				return (this->ptr);
 			}
-			ListIterator	&operator++()
+			Iterator	&operator++()
 			{
 				this->ptr = this->ptr->next();
 				return (*this);
 			}
-			ListIterator	&operator--()
+			Iterator	&operator--()
 			{
 				this->ptr = this->ptr->prev();
 				return (*this);
 			}
-			ListIterator	operator++(int)
+			Iterator	operator++(int)
 			{
-				ListIterator	stock(*this);
+				Iterator	stock(*this);
 				this->ptr = this->ptr->next();
 				return (stock);
 			}
-			ListIterator	operator--(int)
+			Iterator	operator--(int)
 			{
-				ListIterator	stock(*this);
+				Iterator	stock(*this);
 				this->ptr = this->ptr->prev();
 				return (stock);
 			}
@@ -79,27 +79,27 @@ namespace	ft
 			{
 				return (this->ptr->value());
 			}
-			bool		operator==(ListIterator const &rhs) const
+			bool		operator==(Iterator const &rhs) const
 			{
 				return (this->ptr == rhs.ptr);
 			}
-			bool		operator!=(ListIterator const &rhs) const
+			bool		operator!=(Iterator const &rhs) const
 			{
 				return (this->ptr != rhs.ptr);
 			}
-			bool		operator>(ListIterator const &rhs) const
+			bool		operator>(Iterator const &rhs) const
 			{
 				return (this->ptr > rhs.ptr);
 			}
-			bool		operator<(ListIterator const &rhs) const
+			bool		operator<(Iterator const &rhs) const
 			{
 				return (this->ptr < rhs.ptr);
 			}
-			bool		operator>=(ListIterator const &rhs) const
+			bool		operator>=(Iterator const &rhs) const
 			{
 				return (this->ptr >= rhs.ptr);
 			}
-			bool		operator<=(ListIterator const &rhs) const
+			bool		operator<=(Iterator const &rhs) const
 			{
 				return (this->ptr <= rhs.ptr);
 			}
@@ -117,8 +117,8 @@ namespace	ft
 			typedef T *										pointer;
 			typedef T const *								const_pointer;
 			typedef Element<T>								elt;
-			typedef ListIterator< T, Element<T> > 			iterator;
-			typedef ListIterator<T const, Element<T> const> const_iterator;
+			typedef Iterator< T, Element<T> > 			iterator;
+			typedef Iterator<T const, Element<T> const> const_iterator;
 			typedef ReverseIterator<iterator> 				reverse_iterator;
 			typedef ReverseIterator<const_iterator> 		const_reverse_iterator;
 
@@ -130,17 +130,18 @@ namespace	ft
 			List(size_type count, const T &value = T())
 			{
 				this->init();
-				this->assign(begin(), count, value);
+				this->assign(count, value);
 			}
 			List(const List &src)
 			{
 				this->init();
-				this->assign(begin(), src.begin(), src.end());
+				this->assign(src.begin(), src.end());
 			}
-			List(iterator first, iterator last)
+			template <class InputIt>
+			List(InputIt first, InputIt last)
 			{
 				this->init();
-				this->assign(begin(), first, last);
+				this->assign(first, last);
 			}
 			~List(void)
 			{
@@ -244,42 +245,41 @@ namespace	ft
 			}
 			void			pop_front(void)
 			{
-				if (this->empty())
-					return ;
 				if (this->_size > 1)
 				{
 					elt		*first = this->_begin->next();
 					this->_begin->detach();
 					delete this->_begin;
 					this->_begin = first;
+					this->_size -= 1;
 				}
-				else
+				else if (this->_size == 1)
 				{
 					delete this->_begin;
 					this->_begin = this->_end;
 					this->_begin->prev() = NULL;
+					this->_size -= 1;
 				}
-				this->_size -= 1;
 			}
 			void			pop_back(void)
 			{
-				if (this->empty())
-					return ;
 				if (this->_size > 1)
 				{
 					elt		*last = this->_end->prev();
 					this->_end->prev()->detach();
 					delete last;
+					this->_size -= 1;
 				}
-				else
+				else if (this->_size == 1)
 				{
 					delete this->_begin;
 					this->_begin = this->_end;
 					this->_begin->prev() = NULL;
+					this->_size -= 1;
 				}
-				this->_size -= 1;
 			}
-			void			assign(iterator first, iterator last)
+			template <class InputIt>
+			void			assign(InputIt first, InputIt last)
 			{
 				this->clear();
 				while (first != last)
@@ -393,7 +393,10 @@ namespace	ft
 					tmp->detach();
 					pos.get_ptr()->push_before(tmp);
 					if (pos.get_ptr() == this->_begin)
+					{
 						this->_begin = tmp;
+						tmp->prev() = NULL;
+					}
 					this->_size++;
 					other._size--;
 				}
@@ -517,13 +520,15 @@ namespace	ft
 						++it;
 				}
 			}
-			T 				front(void)		const
+			T 				&front(void)		const
 			{
 				return (this->_begin->value());
 			}
-			T 				back(void)		const
+			T 				&back(void)			const
 			{
-				return (this->_end->prev()->value());
+				if (this->_size > 0)
+					return (this->_end->prev()->value());
+				return (this->_end->value());
 			}
 			size_type		size(void)		const
 			{
@@ -531,7 +536,7 @@ namespace	ft
 			}
 			size_type		max_size(void)		const
 			{
-				return (std::numeric_limits<difference_type>::max() - std::numeric_limits<size_type>::max() / (sizeof(elt) - sizeof(T*)));
+				return (std::numeric_limits<difference_type>::max() / (sizeof(elt)));
 			}
 			iterator		begin(void)
 			{
@@ -566,7 +571,12 @@ namespace	ft
 				return (reverse_iterator(this->_begin));
 			}
 
-			List &operator=(const List &rhs);
+			List &operator=(const List &rhs)
+			{
+				this->clear();
+				this->assign(rhs.begin(), rhs.end());
+				return (*this);
+			}
 
 
 
@@ -645,7 +655,11 @@ namespace	ft
 			return (1);
 		return (0);
 	}
-
+	template<typename T>
+	void	swap(List<T> &lhs, List<T> &rhs)
+	{
+		lhs.swap(rhs);
+	}
 }
 
 #endif
