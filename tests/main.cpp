@@ -6,10 +6,12 @@
 /*   By: esoulard <esoulard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/03 16:48:43 by esoulard          #+#    #+#             */
-/*   Updated: 2021/03/18 12:15:57 by esoulard         ###   ########.fr       */
+/*   Updated: 2021/03/18 13:17:03 by esoulard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "List.hpp"
+#include "Vector.hpp"
 #include "tests.hpp"
 
 #include <iostream>
@@ -51,8 +53,8 @@ int main(void) {
 							//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
 							/*    [in Vector_tests.cpp]    */
 
-	testsPtr vectorTests[9] = { &test_vector_fillConstr, &test_vector_rangeConstr, &test_vector_copyConstr, &test_vector_opEqual, &test_vector_pushBack_iterate, 
-							&test_vector_maxSize, &test_vector_capacity, &test_vector_empty, &test_vector_resize, };
+	testsPtr vectorTests[10] = { &test_vector_fillConstr, &test_vector_rangeConstr, &test_vector_copyConstr, &test_vector_opEqual, &test_vector_pushBack_iterate, 
+							&test_vector_maxSize, &test_vector_capacity, &test_vector_empty, &test_vector_resize, &test_vector_reserve, };
 
 	/*    
 							  &test_vector_front_back,  &test_vector_assign, &test_vector_pushFront, 
