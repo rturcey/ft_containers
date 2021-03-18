@@ -188,7 +188,10 @@ namespace	ft
 			}
 			iterator		insert(iterator position, const value_type& val)
 			{
-				reserve(_size + 1);
+				if (_size + 1 > _capacity && _size + 1 <= _capacity * 2)
+					reserve(_capacity * 2);
+				else
+					reserve(_size + 1);
 				size_type		i = 0;
 				iterator		ret = this->begin();
 				while (ret != position && (i > 0 && ret != this->end()))
@@ -207,14 +210,20 @@ namespace	ft
 			}
 			void			insert(iterator position, size_type n, const value_type &val)
 			{
-				reserve(_size + n);
+				if (_size + n > _capacity && _size + n <= _capacity * 2)
+					reserve(_capacity * 2);
+				else
+					reserve(_size + n);
 				for (size_type i = 0 ; i < n ; i++)
 					this->insert(position, val);
 			}
 			template< class InputIt >
 			void			insert(InputIt position, InputIt first, InputIt last)
 			{
-				reserve(_size + (last - first));
+				if (_size + (last - first) > _capacity && _size + (last - first) <= _capacity * 2)
+					reserve(_capacity * 2);
+				else
+					reserve(_size + (last - first));
 				for (iterator it = first ; it != last ; it++)
 					this->insert(position, *it);
 			}
@@ -271,7 +280,10 @@ namespace	ft
 			}
 			void			push_back(const T &value)
 			{
-				reserve(_size + 1);
+				if (_size + 1 > _capacity && _size + 1 <= _capacity * 2)
+					reserve(_capacity * 2);
+				else
+					reserve(_size + 1);
 				this->_vector[_size] = value;
 				this->_size++;
 			}
@@ -436,15 +448,12 @@ namespace	ft
 			{
 				if (new_cap <= _capacity)
 					return ;
-				size_type	nc = new_cap;
-				if (new_cap <= _capacity * 2)
-					nc = _capacity * 2;
-				T*	cpy = new T[nc];
+				T*	cpy = new T[new_cap];
 				for (size_type i = 0 ; i < _size ; i++)
 					cpy[i] = _vector[i];
 				if (_capacity)
 					delete[] _vector;
-				_capacity = nc;
+				_capacity = new_cap;
 				_vector = cpy;
 			}
 
