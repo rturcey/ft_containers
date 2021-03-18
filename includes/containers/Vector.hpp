@@ -188,60 +188,35 @@ namespace	ft
 			}
 			iterator		insert(iterator position, const value_type& val)
 			{
-				if (position == this->end())
+				reserve(_size + 1);
+				size_type		i = 0;
+				iterator		ret = this->begin();
+				while (ret != position && (i > 0 && ret != this->end()))
+					i++;
+				T	next = _vector[i];
+				T	stock;
+				_vector[i++] = val;
+				this->_size += 1;
+				while (i < _size)
 				{
-					this->push_back(val);
-					return (this->end());
+					stock = _vector[i];
+					_vector[i++] = next;
+					next = stock;
 				}
-				else if (position == this->begin())
-				{
-					if (_size + 1 > _capacity)
-						++_capacity;
-					T		*cpy = new T[_capacity];
-					int		i = 0;
-					cpy[i++] = val;
-					for (iterator it = this->begin() ; it != this->end() ; it++)
-						cpy[i++] = *it;
-					delete[] this->_vector;
-					this->_vector = cpy;
-					this->_size += 1;
-					return (this->begin());
-				}
-				else
-				{
-					iterator	ret;
-					if (_size + 1 > _capacity)
-						++_capacity;
-					T		*cpy = new T[_capacity];
-					int		i = 0;
-					for (iterator it = this->begin() ; it != position ; it++)
-					{
-						cpy[i++] = *it;
-						ret = it;
-					}
-					cpy[i++] = val;
-					while (position++ != this->end())
-						cpy[i++] = *position;
-					delete[] this->_vector;
-					this->_vector = cpy;
-						this->_size += 1;
-					return (ret);
-				}
+				return (this->begin());
 			}
 			void			insert(iterator position, size_type n, const value_type &val)
 			{
+				reserve(_size + n);
 				for (size_type i = 0 ; i < n ; i++)
-				{
 					this->insert(position, val);
-				}
 			}
 			template< class InputIt >
 			void			insert(InputIt position, InputIt first, InputIt last)
 			{
+				reserve(_size + (last - first));
 				for (iterator it = first ; it != last ; it++)
-				{
 					this->insert(position, *it);
-				}
 			}
 			iterator		erase(iterator position)
 			{
@@ -263,28 +238,29 @@ namespace	ft
 			}
 			iterator		erase(iterator first, iterator last)
 			{
+				size_type	newsize = (first - last);
 				iterator	ret = this->begin();
 				if (first == this->end())
 				{
 					this->pop_back();
 					return (this->end());
 				}
-				T		*cpy = new T[_capacity];
-				int		i = 0;
+				size_type	i = 0;
 				for (iterator it = this->begin() ; it != first ; it++)
 				{
-					cpy[i++] = *it;
+					i++;
 					ret++;
 				}
+				iterator	stock = first;
 				while (first != last)
-				{
 					first++;
-					this->_size--;
-				}
 				while (first != this->end())
-					cpy[i++] = *first;
-				delete[] this->_vector;
-				this->_vector = cpy;
+				{
+					*stock = *first;
+					stock++;
+					first++;
+				}
+				_size -= newsize;
 				return (ret);
 			}
 			void			clear(void)
@@ -295,24 +271,9 @@ namespace	ft
 			}
 			void			push_back(const T &value)
 			{
-				if (this->_size == this->_capacity)
-				{
-					T	*cpy = new T[_size + 1];
-					size_type	i;
-					for (i = 0 ; i < _size ; i++)
-						cpy[i] = _vector[i];
-					cpy[i] = value;
-					delete[] this->_vector;
-					this->_vector = cpy;
-					this->_capacity++;
-					this->_size++;
-				}
-				else
-				{
-					this->_size += 1;
-					this->_vector[_size] = value;
-				}
-				
+				reserve(_size + 1);
+				this->_vector[_size] = value;
+				this->_size++;
 			}
 			void			pop_back(void)
 			{
@@ -327,8 +288,10 @@ namespace	ft
 			template <class InputIt>
 			void			assign(InputIt first, InputIt last)
 			{
+				size_type	cp = _capacity;
 				this->clear();
-				this->_vector = new T[_capacity];
+				this->_vector = new T[cp];
+				_capacity = cp;
 				while (first != last)
 				{
 					this->push_back(*first);
@@ -337,8 +300,10 @@ namespace	ft
 			}
 			void			assign(size_type count, const T &value)
 			{
+				size_type	cp = _capacity;
 				this->clear();
-				this->_vector = new T[_capacity];
+				this->_vector = new T[cp];
+				_capacity = cp;
 				for (size_type i = 0 ; i < count ; i++)
 					this->push_back(value);
 			}
@@ -359,10 +324,7 @@ namespace	ft
 			{
 				if (n < this->size())
 				{
-					iterator	it = this->begin();
-					for (size_t i = 0 ; i < n ; i++)
-						++it;
-					this->erase(it, this->end());
+					this->_size = n;
 				}
 				else
 					this->insert(this->end(), n - this->size(), val);
@@ -474,11 +436,15 @@ namespace	ft
 			{
 				if (new_cap <= _capacity)
 					return ;
-				T*	cpy = new T[new_cap];
+				size_type	nc = new_cap;
+				if (new_cap <= _capacity * 2)
+					nc = _capacity * 2;
+				T*	cpy = new T[nc];
 				for (size_type i = 0 ; i < _size ; i++)
 					cpy[i] = _vector[i];
-				_capacity = new_cap;
-				delete[] _vector;
+				if (_capacity)
+					delete[] _vector;
+				_capacity = nc;
 				_vector = cpy;
 			}
 
