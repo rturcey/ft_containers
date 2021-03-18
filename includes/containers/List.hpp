@@ -20,91 +20,6 @@
 
 namespace	ft
 {
-	template <typename T, typename E>
-	class	Iterator
-	{
-		public:
-			typedef T							value_type;
-			typedef std::ptrdiff_t				difference_type;
-			typedef T*							pointer;
-			typedef T const *					const_pointer;
-			typedef T&							reference;
-			typedef T const &					const_reference;
-			typedef	E							elt;
-
-		protected:
-			elt			*ptr;
-
-		public:
-			Iterator() : ptr(NULL) {}
-			Iterator(elt *ptr) : ptr(ptr) {}
-			Iterator(Iterator const &src) : ptr(src.ptr) {}
-			virtual			~Iterator() {}
-
-			elt				*get_ptr(void) const
-			{
-				return (this->ptr);
-			}
-			Iterator	&operator++()
-			{
-				this->ptr = this->ptr->next();
-				return (*this);
-			}
-			Iterator	&operator--()
-			{
-				this->ptr = this->ptr->prev();
-				return (*this);
-			}
-			Iterator	operator++(int)
-			{
-				Iterator	stock(*this);
-				this->ptr = this->ptr->next();
-				return (stock);
-			}
-			Iterator	operator--(int)
-			{
-				Iterator	stock(*this);
-				this->ptr = this->ptr->prev();
-				return (stock);
-			}
-			reference		operator*()
-			{
-				return (this->ptr->value());
-			}
-			elt				*elt_ptr(void)
-			{
-				return (this->ptr);
-			}
-			const_reference		operator*() const
-			{
-				return (this->ptr->value());
-			}
-			bool		operator==(Iterator const &rhs) const
-			{
-				return (this->ptr == rhs.ptr);
-			}
-			bool		operator!=(Iterator const &rhs) const
-			{
-				return (this->ptr != rhs.ptr);
-			}
-			bool		operator>(Iterator const &rhs) const
-			{
-				return (this->ptr > rhs.ptr);
-			}
-			bool		operator<(Iterator const &rhs) const
-			{
-				return (this->ptr < rhs.ptr);
-			}
-			bool		operator>=(Iterator const &rhs) const
-			{
-				return (this->ptr >= rhs.ptr);
-			}
-			bool		operator<=(Iterator const &rhs) const
-			{
-				return (this->ptr <= rhs.ptr);
-			}
-	};
-
 	template < typename T>
 	class	List
 	{
@@ -190,7 +105,8 @@ namespace	ft
 					this->insert(position, val);
 				}
 			}
-			void			insert(iterator position, iterator first, iterator last)
+			template< class InputIt >
+			void			insert(InputIt position, InputIt first, InputIt last)
 			{
 				for (iterator it = first ; it != last ; it++)
 				{
@@ -427,6 +343,8 @@ namespace	ft
 				iterator	it = this->begin();
 				iterator	itbis = it++;
 
+				if (_size == 0)
+					return ;
 				while (it != this->end())
 				{
 					if (comp(*it, *itbis))
@@ -449,6 +367,8 @@ namespace	ft
 				iterator	it = this->begin();
 				iterator	itbis = it++;
 
+				if (_size == 0)
+					return ;
 				while (it != this->end())
 				{
 					if (*itbis > *it)
@@ -466,16 +386,18 @@ namespace	ft
 			}
 			void			unique(void)
 			{
-				iterator	it = this->_begin;
+				iterator	it = this->begin();
 				iterator	itbis = it++;
 
-				while (it != this->_end)
+				if (this->_size == 0)
+					return ;
+				while (it != this->end())
 				{
-					while (it != this->_end && *itbis == *it)
+					while (it != this->end() && *itbis == *it)
 						it = this->erase(it);
 					++itbis;
 					it = itbis;
-					if (it != this->_end)
+					if (it != this->end())
 						++it;
 				}
 			}
@@ -485,6 +407,8 @@ namespace	ft
 				iterator	it = this->begin();
 				iterator	itbis = it++;
 
+				if (this->_size == 0)
+					return ;
 				while (it != this->end())
 				{
 					while (it != this->end() && p(*it, *itbis))
@@ -536,7 +460,7 @@ namespace	ft
 			}
 			size_type		max_size(void)		const
 			{
-				return (std::numeric_limits<difference_type>::max() / (sizeof(elt)));
+				return (std::numeric_limits<size_type>::max() / (sizeof(elt)));
 			}
 			iterator		begin(void)
 			{
