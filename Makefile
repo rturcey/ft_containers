@@ -28,7 +28,7 @@ INC_DIRS 		= $(addprefix -I,${INC_UDIR} ${INC_TDIR} ${INC_CDIR})
 #############################################################
 
 CPP			= clang++
-CFLAGS		= -Wall -Wextra -Werror -std=c++98 -fsanitize=address 
+CFLAGS		= -Wall -Wextra -Werror -std=c++98 -g -fsanitize=address 
 NAME		= ft_containers
 
 

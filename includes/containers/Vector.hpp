@@ -188,89 +188,117 @@ namespace	ft
 			}
 			iterator		insert(iterator position, const value_type& val)
 			{
+				size_type		i = 0;
+				iterator		ret = this->begin();
+				if (position != ret)
+					while (ret++ != position)
+						i++;
 				if (_size + 1 > _capacity && _size + 1 <= _capacity * 2)
 					reserve(_capacity * 2);
 				else
 					reserve(_size + 1);
-				size_type		i = 0;
-				iterator		ret = this->begin();
-				while (ret != position && (i > 0 && ret != this->end()))
-					i++;
-				T	next = _vector[i];
-				T	stock;
+				ret = iterator(&_vector[i]);
+				T	next;
+				T	stock = _vector[i];
 				_vector[i++] = val;
-				this->_size += 1;
 				while (i < _size)
 				{
-					stock = _vector[i];
-					_vector[i++] = next;
-					next = stock;
+					next = _vector[i];
+					_vector[i++] = stock;
+					stock = next;
 				}
-				return (this->begin());
+				if (_size)
+					_vector[i++] = stock;
+				this->_size += 1;
+				return (ret);
 			}
 			void			insert(iterator position, size_type n, const value_type &val)
 			{
+				iterator		it = this->begin();
+				size_type		i = 0;
+				if (it != position)
+					while (it++ != position)
+						i++;
 				if (_size + n > _capacity && _size + n <= _capacity * 2)
 					reserve(_capacity * 2);
 				else
 					reserve(_size + n);
-				for (size_type i = 0 ; i < n ; i++)
-					this->insert(position, val);
+				it = this->begin();
+				for (size_type j = 0 ; j < i ; j++)
+					it++;
+				for (size_type id = 0 ; id < n ; id++)
+					it = this->insert(it, val);
 			}
 			template< class InputIt >
 			void			insert(InputIt position, InputIt first, InputIt last)
 			{
+				iterator		it = this->begin();
+				size_type		i = 0;
+				if (it != position)
+					while (it++ != position)
+						i++;
+				iterator	stock = first;
+				size_type	t = _size;
+				while (stock++ != last)
+					t++;
 				if (_size + (last - first) > _capacity && _size + (last - first) <= _capacity * 2)
 					reserve(_capacity * 2);
 				else
 					reserve(_size + (last - first));
-				for (iterator it = first ; it != last ; it++)
-					this->insert(position, *it);
+				size_type		j = 0;
+				T*		buf = new T[t];
+				while (j != i)
+				{
+					buf[j] = _vector[j];
+					j++;
+				}
+				while (first != last)
+				{
+					buf[j++] = *first;
+					first++;
+				}
+				while (i != _size)
+					buf[j++] = _vector[i++];
+				delete [] _vector;
+				_vector = buf;
+				_size = j;
 			}
 			iterator		erase(iterator position)
 			{
-				if (position == this->end())
+				if (_size == 0 || position == this->end())
+					return (position);
+				iterator	it = position;
+				iterator	ret;
+
+				it++;
+				ret = it;
+				if (it == this->end())
+					*position = T();
+				while (it != this->end())
 				{
-					this->pop_back();
-					return (this->end());
+					*position = *it;
+					position++;
+					it++;
 				}
-				this->_size -= 1;
-				T		*cpy = new T[_capacity];
-				int		i = 0;
-				for (iterator it = this->begin() ; it != this->end() ; it++)
-				{
-					if (it != position)
-						cpy[i++] = *it;
-				}
-				delete[] this->_vector;
-				this->_vector = cpy;
+				this->_size--;
+				return (ret);
 			}
 			iterator		erase(iterator first, iterator last)
 			{
-				size_type	newsize = (first - last);
-				iterator	ret = this->begin();
-				if (first == this->end())
+				size_type		cut = (last - first);
+				iterator		it = first;
+				
+				it++;
+				if (it == this->end())
+					*first = T();
+				while (first != last && it != this->end())
 				{
-					this->pop_back();
-					return (this->end());
-				}
-				size_type	i = 0;
-				for (iterator it = this->begin() ; it != first ; it++)
-				{
-					i++;
-					ret++;
-				}
-				iterator	stock = first;
-				while (first != last)
+					*first = *it;
 					first++;
-				while (first != this->end())
-				{
-					*stock = *first;
-					stock++;
-					first++;
+					it++;
 				}
-				_size -= newsize;
-				return (ret);
+				this->_size -= cut;
+				return (first);
 			}
 			void			clear(void)
 			{
@@ -336,7 +364,10 @@ namespace	ft
 			{
 				if (n < this->size())
 				{
-					this->_size = n;
+					iterator	it = this->begin();
+					for (size_type i = 0 ; i < n ; i++)
+						it++;
+					this->erase(it,this->end());
 				}
 				else
 					this->insert(this->end(), n - this->size(), val);
@@ -415,19 +446,19 @@ namespace	ft
 						return (*it);
 					it++;
 				}
-				return (NULL);
+				return (0);
 			}
 			reference at(size_type pos)
 			{
 				if (pos < 0 || pos > _size - 1)
-					throw std::out_of_range("Out of range");
+					throw std::out_of_range("vector");
 				return (this->_vector[pos]);
 				
 			}
 			const_reference at(size_type pos) const
 			{
 				if (pos < 0 || pos > _size - 1)
-					throw std::out_of_range("Out of range");
+					throw std::out_of_range("vector");
 				return (this->_vector[pos]);
 				
 			}

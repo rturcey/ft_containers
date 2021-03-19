@@ -254,18 +254,18 @@ int test_vector_capacity();
 int test_vector_empty();
 int test_vector_reserve();
 // //ELEMENT ACCESS
-// int test_vector_oparray();
-// int test_vector_at();
-// int test_vector_front_back();
+int test_vector_oparray();
+int test_vector_at();
+int test_vector_front_back();
 // //MODIFIERS
-// int test_vector_assign();
-// int test_vector_popBack();
-// int test_vector_insert();
-// int test_vector_erase();
-// int test_vector_swap();
-// int test_vector_clear();
+int test_vector_assign();
+int test_vector_popBack();
+int test_vector_insert();
+int test_vector_erase();
+int test_vector_swap();
+int test_vector_clear();
 // //NON-MEMBER FUNCTION OVERLOADS
-// int test_vector_nonMembers();
+int test_vector_nonMembers();
 
 /*----------MAP TESTS----------*/
 /*     [in Map_tests.cpp]      */
