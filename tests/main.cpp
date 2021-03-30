@@ -75,6 +75,41 @@ int main(void) {
 		output_title(">>>>>>>>> Vector tests: FAIL :( <<<<<<<<<");
 	}
 
+//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+							///*\*/*\*/*\STACK TESTS/*\*/*\///
+							//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+							/*     [in Stack_tests.cpp]     */
+
+	testsPtr stackTests[4] = { &test_stack_constr_size, &test_stack_empty, &test_stack_top_push_pop, &test_stack_nonMembers, };
+
+	try {
+		output_title("- STACK TESTS -");
+		for (unsigned int i = 0; i < (sizeof(stackTests) / sizeof(*(stackTests))); i++)
+			(*stackTests[i])();
+		output_title(">>>>>>>>> Stack tests: SUCCESS! <<<<<<<<<");
+	}
+	catch(std::exception &e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+		output_title(">>>>>>>>> Stack tests: FAIL :( <<<<<<<<<");
+	}
+
+	//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+							///*\*/*\*/*\QUEUE TESTS/*\*/*\///
+							//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+							/*     [in Queue_tests.cpp]     */
+
+	testsPtr queueTests[4] = { &test_queue_constr_size, &test_queue_empty, &test_queue_top_push_pop, &test_queue_nonMembers, };
+
+	try {
+		output_title("- QUEUE TESTS -");
+		for (unsigned int i = 0; i < (sizeof(queueTests) / sizeof(*(queueTests))); i++)
+			(*queueTests[i])();
+		output_title(">>>>>>>>> Queue tests: SUCCESS! <<<<<<<<<");
+	}
+	catch(std::exception &e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+		output_title(">>>>>>>>> Queue tests: FAIL :( <<<<<<<<<");
+	}
 
 
 	//system("leaks ft_containers"); //MUST REMOVE fsanitize from Makefile

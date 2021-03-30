@@ -21,6 +21,8 @@
 
 #include "List.hpp"
 #include "Vector.hpp"
+#include "Stack.hpp"
+#include "Queue.hpp"
 
 #include <iomanip>
 #include <string>
@@ -36,7 +38,6 @@ class customException : public std::exception {
 	protected:
 		std::string const _err;	
 };
-
 
 template <class ft_class, class std_class>
 void output_containers(ft_class ft_container, std_class std_container, std::string const &type, std::ostream &o) {
@@ -120,13 +121,274 @@ void output_containers(ft_class ft_container, std_class std_container, std::stri
 };
 
 template <class ft_class, class std_class>
+void handle_stack_error(ft_class ft_container, std_class std_container, std::string const &type, std::string const &func, 
+	std::string const &testInfo, std::string const &errorTheme) {
+			std::cout << std::setfill('.') << std::setw(WIDTH - func.size()) << " ✘" << std::endl;
+			std::cerr << ">---FAIL--->>>  ON FUNCTION: " << func << std::endl;
+			if (testInfo.size())
+				std::cerr << std::string(15, ' ') << " Test info: " << testInfo << std::endl;
+			
+			int ft_size = ft_container.size();
+			int std_size = std_container.size();
+
+			std::string tmp;
+			std::string a;
+			std::stringstream conv;
+			std::setfill(' ');
+
+			tmp = "------------------------------------";
+			int nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << std::endl << std::string( nb, ' ' ) << tmp << std::endl;
+
+			tmp = "- SIZE -";
+			nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+			conv << ft_size;
+			tmp = "ft_" + type + ": <" + conv.str() + ">";
+			conv.str(std::string());
+			nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << tmp << std::string( nb, ' ' );
+
+			conv << std_size;
+			tmp = "std_" + type + ": <" + conv.str() + ">";
+			conv.str(std::string());
+			nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+			//o << std::setw(step) << "std_" << type << ": " << std_size << std::endl;
+
+			try {
+				tmp =  "- TOP -";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				tmp = "ft_" + type + ".top() : ";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+
+				tmp = "std_" + type + ".top() : ";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				conv << ft_container.top();
+				tmp = "[" + conv.str() + "]";
+				conv.str(std::string());
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+
+				conv << std_container.top();
+				tmp = "[" + conv.str() + "]";
+				conv.str(std::string());
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+			}
+			catch (std::exception &e) {}
+			throw customException("ft_container " + errorTheme + " doesn't match std::container's!");
+};
+
+template <class ft_class, class std_class>
+void handle_queue_error(ft_class ft_container, std_class std_container, std::string const &type, std::string const &func, 
+	std::string const &testInfo, std::string const &errorTheme) {
+			std::cout << std::setfill('.') << std::setw(WIDTH - func.size()) << " ✘" << std::endl;
+			std::cerr << ">---FAIL--->>>  ON FUNCTION: " << func << std::endl;
+			if (testInfo.size())
+				std::cerr << std::string(15, ' ') << " Test info: " << testInfo << std::endl;
+			
+			int ft_size = ft_container.size();
+			int std_size = std_container.size();
+
+			std::string tmp;
+			std::string a;
+			std::stringstream conv;
+			std::setfill(' ');
+
+			tmp = "------------------------------------";
+			int nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << std::endl << std::string( nb, ' ' ) << tmp << std::endl;
+
+			tmp = "- SIZE -";
+			nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+			conv << ft_size;
+			tmp = "ft_" + type + ": <" + conv.str() + ">";
+			conv.str(std::string());
+			nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << tmp << std::string( nb, ' ' );
+
+			conv << std_size;
+			tmp = "std_" + type + ": <" + conv.str() + ">";
+			conv.str(std::string());
+			nb = (WIDTH - tmp.size()) / 2;
+			std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+			//o << std::setw(step) << "std_" << type << ": " << std_size << std::endl;
+
+			try {
+				tmp =  "- FRONT -";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				tmp = "ft_" + type + ".front() : ";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+
+				tmp = "std_" + type + ".front() : ";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				conv << ft_container.front();
+				tmp = "[" + conv.str() + "]";
+				conv.str(std::string());
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+
+				conv << std_container.front();
+				tmp = "[" + conv.str() + "]";
+				conv.str(std::string());
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				tmp =  "- BACK -";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				tmp = "ft_" + type + ".back() : ";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+
+				tmp = "std_" + type + ".back() : ";
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+
+				conv << ft_container.back();
+				tmp = "[" + conv.str() + "]";
+				conv.str(std::string());
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+
+				conv << std_container.back();
+				tmp = "[" + conv.str() + "]";
+				conv.str(std::string());
+				nb = (WIDTH - tmp.size()) / 2;
+				std::cerr << tmp << std::string( nb, ' ' );
+				std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+			}
+			catch (std::exception &e) {}
+			throw customException("ft_container " + errorTheme + " doesn't match std::container's!");
+};
+
+template <class ft_class, class std_class>
+void output_map(ft_class ft_container, std_class std_container, std::string const &type, std::ostream &o) {
+
+	int ft_size = ft_container.size();
+	int std_size = std_container.size();
+
+	std::string tmp;
+	std::string a;
+	std::stringstream conv;
+	std::setfill(' ');
+
+	tmp = "------------------------------------";
+	int nb = (WIDTH - tmp.size()) / 2;
+	o << std::endl << std::string( nb, ' ' ) << tmp << std::endl;
+
+	tmp = "- SIZE -";
+	nb = (WIDTH - tmp.size()) / 2;
+	o << std::string( nb, ' ' ) << tmp << std::endl;
+
+	conv << ft_size;
+	tmp = "ft_" + type + ": <" + conv.str() + ">";
+	conv.str(std::string());
+	nb = (WIDTH - tmp.size()) / 2;
+	o << tmp << std::string( nb, ' ' );
+
+	conv << std_size;
+	tmp = "std_" + type + ": <" + conv.str() + ">";
+	conv.str(std::string());
+	nb = (WIDTH - tmp.size()) / 2;
+	o << std::string( nb, ' ' ) << tmp << std::endl;
+	//o << std::setw(step) << "std_" << type << ": " << std_size << std::endl;
+
+	tmp =  "- CONTENT -";
+	nb = (WIDTH - tmp.size()) / 2;
+	o << std::string( nb, ' ' ) << tmp << std::endl;
+
+	tmp = "ft_" + type + ": ";
+	nb = (WIDTH - tmp.size()) / 2;
+	o << tmp << std::string( nb, ' ' );
+
+	tmp = "std_" + type + ": ";
+	nb = (WIDTH - tmp.size()) / 2;
+	o << std::string( nb, ' ' ) << tmp << std::endl;
+
+	typename ft_class::iterator ft_it = ft_container.begin();
+	typename ft_class::iterator ft_ite = ft_container.end();
+	
+	typename std_class::iterator std_it = std_container.begin();
+	typename std_class::iterator std_ite = std_container.end();
+
+	int i = -1;
+	int max = std_size;
+	std::string content;
+
+	if (ft_size > std_size)
+		max = ft_size;
+	while (++i < max) {
+		if (ft_it != ft_ite) {
+			content = "[";
+			conv << (*ft_it).first;
+			content += conv.str();
+			content += "]";
+			content += "[";
+			conv.str(std::string());
+			conv << (*ft_it).second;
+			content += conv.str();
+			content += "]";
+			conv.str(std::string());
+			nb = (WIDTH - content.size()) / 2;
+			o << content << std::string( nb, ' ' );
+			ft_it++;
+		}
+		else
+			o << std::string(WIDTH/2 + 2, ' ' );
+		if (std_it != std_ite) {
+			content = "[";
+			conv << (*std_it).first;
+			content += conv.str();
+			content += "]";
+			content += "[";
+			conv.str(std::string());
+			conv << (*std_it).second;
+			content += conv.str();
+			content += "]";
+			conv.str(std::string());
+			nb = (WIDTH - content.size()) / 2;
+			o << std::string( nb, ' ' ) << content << std::endl;
+			std_it++;
+		}
+		else
+			o << std::string(WIDTH/2, ' ' ) << std::endl;
+	}
+
+	tmp = "------------------------------------";
+	nb = (WIDTH - tmp.size()) / 2;
+	o << std::string( nb, ' ' ) << tmp << std::endl;
+};
+
+template <class ft_class, class std_class>
 void handle_error(ft_class ft_container, std_class std_container, std::string const &type, std::string const &func, 
 	std::string const &testInfo, std::string const &errorTheme) {
 			std::cout << std::setfill('.') << std::setw(WIDTH - func.size()) << " ✘" << std::endl;
 			std::cerr << ">---FAIL--->>>  ON FUNCTION: " << func << std::endl;
 			if (testInfo.size())
 				std::cerr << std::string(15, ' ') << " Test info: " << testInfo << std::endl;
-			output_containers(ft_container, std_container, type, std::cerr);
+
+			// if (type.compare(std::string("map")) == 0)
+			// 	output_map(ft_container, std_container, type, std::cerr);
+			// else
+				output_containers(ft_container, std_container, type, std::cerr);
 			throw customException("ft_container " + errorTheme + " doesn't match std::container's!");
 };
 
@@ -147,59 +409,57 @@ int chk_result(ft_class ft_container, std_class std_container, std::string const
 			handle_error(ft_container, std_container, type, func, testInfo, "CONTENT");
 		std_it++;
 	}
-	
 
 	return 0;
 };
 
-// template <class ft_class, class std_class>
-// void handle_errorVector(ft_class ft_container, std_class std_container, size_t std_capac, std::string const &type, std::string const &func, 
-// 	std::string const &testInfo, std::string const &errorTheme) {
-// 			std::cout << std::setfill('.') << std::setw(WIDTH - func.size()) << " ✘" << std::endl;
-// 			std::cerr << ">---FAIL--->>>  ON FUNCTION: " << func << std::endl;
-// 			if (testInfo.size())
-// 				std::cerr << std::string(15, ' ') << " Test info: " << testInfo << std::endl;
-			
-// 			std::string tmp = "- CAPACITY -";
-// 			int nb = (WIDTH - tmp.size()) / 2;
-// 			std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
 
-// 			std::stringstream conv;
-// 			conv << ft_container.capacity();
-// 			tmp = "ft_" + type + ": <" + conv.str() + ">";
-// 			conv.str(std::string());
-// 			nb = (WIDTH - tmp.size()) / 2;
-// 			std::cerr << tmp << std::string( nb, ' ' );
+template <class ft_class, class std_class>
+void handle_mapError(ft_class ft_container, std_class std_container, std::string const &type, std::string const &func, 
+	std::string const &testInfo, std::string const &errorTheme) {
+			std::cout << std::setfill('.') << std::setw(WIDTH - func.size()) << " ✘" << std::endl;
+			std::cerr << ">---FAIL--->>>  ON FUNCTION: " << func << std::endl;
+			if (testInfo.size())
+				std::cerr << std::string(15, ' ') << " Test info: " << testInfo << std::endl;
 
-// 			conv << std_capac;
-// 			tmp = "std_" + type + ": <" + conv.str() + ">";
-// 			conv.str(std::string());
-// 			nb = (WIDTH - tmp.size()) / 2;
-// 			std::cerr << std::string( nb, ' ' ) << tmp << std::endl;
+			output_map(ft_container, std_container, type, std::cerr);
 
-// 			output_containers(ft_container, std_container, type, std::cerr);
-// 			throw customException("ft_container " + errorTheme + " doesn't match std::container's!");
-// };
+			throw customException("ft_container " + errorTheme + " doesn't match std::container's!");
+};
 
-// template <class ft_class, class std_class>
-// int chk_resultVector(ft_class ft_container, std_class std_container, size_t std_capac, std::string const &type, std::string const &func, std::string const &testInfo = "") {
-		
-// 	std::cout << std_capac << " vs cont capac " << std_container.capacity() << std::endl;
-// 	if (ft_container.capacity() != std_capac)
-// 		handle_errorVector(ft_container, std_container, std_capac, type, func, testInfo, "CAPACITY");
+template <class ft_class, class std_class>
+int chk_mapResult(ft_class ft_container, std_class std_container, std::string const &type, std::string const &func, std::string const &testInfo = "") {
+	
+	//std::cout << "in chk res : size " << ft_container.size() << std::endl;
 
+	if (ft_container.size() != std_container.size())
+		handle_mapError(ft_container, std_container, type, func, testInfo, "SIZE");
 
-// 	chk_result(ft_container, std_container, type, func, testInfo);
-// 	return 0;
-// };
+	typename ft_class::iterator ft_it = ft_container.begin();
+	typename ft_class::iterator ft_ite = ft_container.end();
+	
+	typename std_class::iterator std_it = std_container.begin();
+
+	
+	for (ft_it = ft_container.begin(); ft_it != ft_ite; ft_it++) {
+		if ((*ft_it).first != (*std_it).first || (*ft_it).second != (*std_it).second)
+			handle_mapError(ft_container, std_container, type, func, testInfo, "CONTENT");
+		std_it++;
+	}
+
+	return 0;
+};
 
 typedef int (*testsPtr)();
 
 
-//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
-///*\*/*\*/*\LIST TESTS/*\*/*\*//
-//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
-/*     [in List_tests.cpp]     */
+//************************************************//
+
+
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
+		///*\*/*\*/*\LIST TESTS/*\*/*\*//
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
+		/*     [in List_tests.cpp]     */
 
 //CONSTRUCTORS
 int test_list_fillConstr();
@@ -234,11 +494,12 @@ int test_list_reverse();
 //NON-MEMBER FUNCTION OVERLOADS
 int test_list_nonMembers();
 
+//************************************************//
 
-//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
-///*\*/*\*/*\VECTOR TESTS/*\*/*//
-//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
-/*     [in Vector_tests.cpp]     */
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
+		///*\*/*\*/*\VECTOR TESTS/*\*/*//
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
+		/*     [in Vector_tests.cpp]     */
 
 //CONSTRUCTORS
 int test_vector_fillConstr();
@@ -267,13 +528,36 @@ int test_vector_clear();
 //NON-MEMBER FUNCTION OVERLOADS
 int test_vector_nonMembers();
 
-/*----------MAP TESTS----------*/
-/*     [in Map_tests.cpp]      */
+//************************************************//
 
-/*----------STACK TESTS----------*/
-/*     [in Stack_tests.cpp]      */
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+		///*\*/*\*/*\STACK TESTS/*\*/*\///
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+		/*     [in Stack_tests.cpp]     */
 
-/*----------QUEUE TESTS----------*/
-/*     [in Queue_tests.cpp]      */
+//CONSTRUCTORS
+int test_stack_constr_size();
+//MEMBER FUNCTIONS
+int test_stack_empty();
+int test_stack_top_push_pop();
+//NON-MEMBER FUNCTION OVERLOADS
+int test_stack_nonMembers();
+
+//************************************************//
+
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+		///*\*/*\*/*\QUEUE TESTS/*\*/*\///
+		//*\*/*\/*\*/*\/*\*/*\/*\*/*\*////
+		/*     [in Queue_tests.cpp]     */
+
+//CONSTRUCTORS
+int test_queue_constr_size();
+//MEMBER FUNCTIONS
+int test_queue_empty();
+int test_queue_top_push_pop();
+//NON-MEMBER FUNCTION OVERLOADS
+int test_queue_nonMembers();
+
+//************************************************//
 
 #endif
