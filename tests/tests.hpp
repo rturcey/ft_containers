@@ -264,7 +264,7 @@ int test_vector_insert();
 int test_vector_erase();
 int test_vector_swap();
 int test_vector_clear();
-// //NON-MEMBER FUNCTION OVERLOADS
+//NON-MEMBER FUNCTION OVERLOADS
 int test_vector_nonMembers();
 
 /*----------MAP TESTS----------*/

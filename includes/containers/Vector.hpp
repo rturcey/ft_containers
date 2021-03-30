@@ -266,14 +266,15 @@ namespace	ft
 			iterator		erase(iterator position)
 			{
 				if (_size == 0 || position == this->end())
-					return (position);
+					return (this->end());
 				iterator	it = position;
-				iterator	ret;
 
 				it++;
-				ret = it;
 				if (it == this->end())
 					*position = T();
+				int	i = 0;
+				for (iterator itb = this->begin() ; itb != position ; itb++)
+					i++;
 				while (it != this->end())
 				{
 					*position = *it;
@@ -281,7 +282,7 @@ namespace	ft
 					it++;
 				}
 				this->_size--;
-				return (ret);
+				return (iterator(&(_vector[i])));
 			}
 			iterator		erase(iterator first, iterator last)
 			{
@@ -291,6 +292,9 @@ namespace	ft
 				it++;
 				if (it == this->end())
 					*first = T();
+				int	i = 0;
+				for (iterator itb = this->begin() ; itb != first ; itb++)
+					i++;
 				while (first != last && it != this->end())
 				{
 					*first = *it;
@@ -298,7 +302,7 @@ namespace	ft
 					it++;
 				}
 				this->_size -= cut;
-				return (first);
+				return (iterator(&(_vector[i])));
 			}
 			void			clear(void)
 			{

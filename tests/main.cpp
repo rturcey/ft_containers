@@ -58,6 +58,7 @@ int main(void) {
 							&test_vector_at, &test_vector_front_back, &test_vector_assign, &test_vector_popBack, &test_vector_insert, &test_vector_erase, 
 							&test_vector_swap, &test_vector_clear, &test_vector_nonMembers, };
 
+
 	/*    
 							     
                        	 	  &test_vector_splice, &test_vector_remove, &test_vector_removeIf, 
