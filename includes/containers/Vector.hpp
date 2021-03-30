@@ -292,21 +292,26 @@ namespace	ft
 				it++;
 				if (it == this->end())
 					*first = T();
-				int	i = 0;
+				size_t	i = 0;
 				for (iterator itb = this->begin() ; itb != first ; itb++)
 					i++;
-				while (first != last && it != this->end())
-				{
-					*first = *it;
-					first++;
-					it++;
+				size_t	ret = i;
+				if (_size) {
+					while (i < _size) {
+						if (i + cut < _size)
+							_vector[i] = _vector[i + cut];
+						else
+							_vector[i] = T();
+						i++;
+					}
 				}
 				this->_size -= cut;
-				return (iterator(&(_vector[i])));
+				return (iterator(&(_vector[ret])));
 			}
 			void			clear(void)
 			{
-				delete[] this->_vector;
+				if (_size)
+					delete[] this->_vector;
 				_size = 0;
 				_capacity = 0;
 			}
@@ -361,8 +366,14 @@ namespace	ft
 			{
 				T		*ptr;
 				ptr = x._vector;
-				x._vector = this->_vector;
-				this->_vector = ptr;
+				size_type	ssize = x._size;
+				size_type	capcity = x._capacity;
+				x._vector = _vector;
+				x._size = _size;
+				x._capacity = _capacity;
+				_vector = ptr;
+				_size = ssize;
+				_capacity = capcity;
 			}
 			void			resize(size_type n, value_type val = value_type())
 			{
@@ -549,10 +560,8 @@ namespace	ft
 	template<typename T>
 	bool operator>=(Vector<T> const &lhs, Vector<T> const &rhs)
 	{
-		if (lhs.size() >= rhs.size())
+		if (lhs.size() > rhs.size())
 			return (1);
-		else
-			return (0);
 		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) <= 0)
 			return (1);
 		return (0);
@@ -560,10 +569,8 @@ namespace	ft
 		template<typename T>
 	bool operator<=(Vector<T> const &lhs, Vector<T> const &rhs)
 	{
-		if (lhs.size() <= rhs.size())
+		if (lhs.size() < rhs.size())
 			return (1);
-		else
-			return (0);
 		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) >= 0)
 			return (1);
 		return (0);

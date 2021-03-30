@@ -16,7 +16,7 @@
 namespace	ft
 {
 	template<class It, class Itbis>
-	bool	inf(It beg, It itend, Itbis beg2, Itbis itend2)
+	int			inf(It beg, It itend, Itbis beg2, Itbis itend2)
 	{
 		while (beg != itend && beg2 != itend2)
 		{

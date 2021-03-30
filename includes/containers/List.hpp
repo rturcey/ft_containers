@@ -560,10 +560,8 @@ namespace	ft
 	template<typename T>
 	bool operator>=(List<T> const &lhs, List<T> const &rhs)
 	{
-		if (lhs.size() >= rhs.size())
+		if (lhs.size() > rhs.size())
 			return (1);
-		else
-			return (0);
 		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) <= 0)
 			return (1);
 		return (0);
@@ -571,10 +569,8 @@ namespace	ft
 		template<typename T>
 	bool operator<=(List<T> const &lhs, List<T> const &rhs)
 	{
-		if (lhs.size() <= rhs.size())
+		if (lhs.size() < rhs.size())
 			return (1);
-		else
-			return (0);
 		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) >= 0)
 			return (1);
 		return (0);

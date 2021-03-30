@@ -952,18 +952,21 @@ int test_vector_swap() {
 	vector.push_back('@');
 	vector.push_back('&');
 
+
 	ft::Vector<char> ft_vectorEmpty;
 	std::vector<char> vectorEmpty;
 	ft_vectorEmpty.swap(ft_vector);
 	vectorEmpty.swap(vector);
 
+
 	chk_result(ft_vector, vector, "vector", title, "[Full vs Empty][1/2]");
 	chk_result(ft_vectorEmpty, vectorEmpty, "vector", title, "[Full vs Empty][2/2]");
-	
+
 	ft_vectorEmpty.swap(ft_vector);
 	vectorEmpty.swap(vector);
 	chk_result(ft_vector, vector, "vector", title, "[Empty vs Full][1/2]");
 	chk_result(ft_vectorEmpty, vectorEmpty, "vector", title, "[Empty vs Full][2/2]");
+
 
 	ft_vectorEmpty.insert(ft_vectorEmpty.begin(), 56, 'v');
 	vectorEmpty.insert(vectorEmpty.begin(), 56, 'v');
