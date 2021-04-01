@@ -22,6 +22,7 @@ class	Map_Element
 		Map_Element(void) : _left(NULL), _right(NULL), parent(NULL), _data() {}
 		Map_Element(const T &data) : _left(NULL), _right(NULL), parent(NULL), _data(data) {}
 		Map_Element(const T &data, Map_Element *left, Map_Element *right, Map_Element *parent) : _left(left), _right(right), parent(NULL), _data(data) {}
+		Map_Element(const T &data, Map_Element *parent) : _left(NULL), _right(NULL), parent(parent), _data(data) {}
 		Map_Element(Map_Element const &src) : _left(src._left), _right(src._right), _parent(src._parent), _data(src._data) {}
 
 		Map_Element &operator=(const Map_Element &rhs)
@@ -30,23 +31,6 @@ class	Map_Element
 			this->_right = rhs._right;
 			this->_parent = rhs._parent;
 			this->_data = rhs.data;
-		}
-		void	detach(void)
-		{
-			if (this->_left)
-				this->_left->_right = this->_right;
-			if	(this->_right)
-				this->_right->_left = this->_left;
-		}
-		void	push_before(Map_Element *elt)
-		{
-			if (this->_left)
-			{
-				elt->_left = this->_left;
-				this->_left->_right = elt;
-			}
-			elt->_right = this;
-			this->_left = elt;
 		}
 		Map_Element	*&right(void)
 		{

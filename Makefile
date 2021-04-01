@@ -5,7 +5,7 @@ INC_CONT 	:= $(addprefix ${INC_CDIR}, ${INC_CONT})
 #############################################################
 
 ########################### UTILS ###########################
-INC_UTILS	= Element.hpp ReverseIterator.hpp Utils.hpp
+INC_UTILS	= Element.hpp ReverseIterator.hpp Utils.hpp Map_Element.hpp
 INC_UDIR	= includes/utils/
 INC_UTILS	:= $(addprefix ${INC_UDIR},${INC_UTILS})
 #############################################################
