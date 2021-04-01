@@ -26,7 +26,7 @@ namespace	ft
 		public:
 			typedef T										mapped_type;
             typedef Key										key_type;
-            typedef pair<const key_type, mapped_type>		value_type;
+            typedef std::pair<const key_type, mapped_type>		value_type;
             typedef Compare                                 key_compare;
 			typedef size_t									size_type;
 			typedef std::ptrdiff_t							difference_type;
@@ -35,8 +35,8 @@ namespace	ft
 			typedef value_type *							pointer;
 			typedef value_type const *						const_pointer;
 			typedef Map_Element<Key, T>						elt;
-			typedef Iterator<value_type>        			iterator;
-			typedef Iterator<value_type>                    const_iterator;
+			typedef Iterator<value_type, elt>        			iterator;
+			typedef Iterator<value_type, elt>                    const_iterator;
 			typedef ReverseIterator<iterator> 				reverse_iterator;
 			typedef ReverseIterator<const_iterator> 		const_reverse_iterator;
 
@@ -78,7 +78,7 @@ namespace	ft
 				this->_end->left() = NULL;
 				this->_end->parent() = NULL;
 			}
-			pair<iterator, bool>	check_double_pair(const value_type& val, elt *root)
+			std::pair<iterator, bool>	check_double_std::pair(const value_type& val, elt *root)
 			{
 				value_type		ret = NULL;
 				if (!root)
@@ -102,10 +102,10 @@ namespace	ft
 				if ((ret = check_double(val, root->right())))
 					return (ret);
 			}
-			pair<iterator, bool>	insert(const value_type& val)
+			std::pair<iterator, bool>	insert(const value_type& val)
 			{
 				value_type	ret;
-				if ((ret = check_double_pair(val, _begin)))
+				if ((ret = check_double_std::pair(val, _begin)))
 					return (ret);
 				elt			it = _begin;
 				if (begin() == end())

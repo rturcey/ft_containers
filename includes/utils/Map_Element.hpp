@@ -19,18 +19,65 @@ template <typename T>
 class	Map_Element
 {
 	public:
-		Map_Element(void) : _left(NULL), _right(NULL), parent(NULL), _data() {}
-		Map_Element(const T &data) : _left(NULL), _right(NULL), parent(NULL), _data(data) {}
-		Map_Element(const T &data, Map_Element *left, Map_Element *right, Map_Element *parent) : _left(left), _right(right), parent(NULL), _data(data) {}
-		Map_Element(const T &data, Map_Element *parent) : _left(NULL), _right(NULL), parent(parent), _data(data) {}
-		Map_Element(Map_Element const &src) : _left(src._left), _right(src._right), _parent(src._parent), _data(src._data) {}
+		Map_Element(void) : _left(NULL), _right(NULL), parent(NULL), _val() {}
+		Map_Element(const T &data) : _left(NULL), _right(NULL), parent(NULL), _val(data) {}
+		Map_Element(const T &data, Map_Element *left, Map_Element *right, Map_Element *parent) : _left(left), _right(right), parent(NULL), _val(data) {}
+		Map_Element(const T &data, Map_Element *parent) : _left(NULL), _right(NULL), parent(parent), _val(data) {}
+		Map_Element(Map_Element const &src) : _left(src._left), _right(src._right), _parent(src._parent), _val(src._val) {}
 
 		Map_Element &operator=(const Map_Element &rhs)
 		{
 			this->_left = rhs._left;
 			this->_right = rhs._right;
 			this->_parent = rhs._parent;
-			this->_data = rhs.data;
+			this->_val = rhs.data;
+		}
+		Map_Element	*&next()
+		{
+			if (_left)
+				return (_left);
+			if (_right)
+				return (_right);
+			while (42)
+			{
+				if (_parent)
+				{
+					ptr = _parent;
+					while (ptr && !_right)
+						ptr = _parent;
+					if (ptr && ptr->_right)
+						return (ptr->_right);
+					return (NULL);
+				}
+				else
+					return (NULL);
+			}
+			return (NULL);
+		}
+		Map_Element	*&prev()
+		{
+			Map_Element	*&next()
+		{
+			if (_right)
+				return (_right);
+			if (_left)
+				return (_left);
+			while (42)
+			{
+				if (_parent)
+				{
+					ptr = _parent;
+					while (ptr && !_left)
+						ptr = _parent;
+					if (ptr && ptr->_left)
+						return (ptr->_left);
+					return (NULL);
+				}
+				else
+					return (NULL);
+			}
+			return (NULL);
+		}
 		}
 		Map_Element	*&right(void)
 		{
@@ -58,22 +105,22 @@ class	Map_Element
 		}
 		T		&value(void)
 		{
-			return (this->_data);
+			return (this->_val);
 		}
 		T const	&value(void) const
 		{
-			return (this->_data);
+			return (this->_val);
 		}
 		void	change_value(T const &value)
 		{
-			this->_data = value;
+			this->_val = value;
 		}
 
 	private:
 		Map_Element	*_left;
 		Map_Element	*_right;
 		Map_Element	*parent;
-		T			_data;
+		T			_val;
 };
 
 #endif

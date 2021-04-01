@@ -31,6 +31,91 @@ namespace	ft
 	};
 
 	template <typename T, typename E>
+	class	MapIterator
+	{
+		public:
+			typedef T							value_type;
+			typedef std::ptrdiff_t				difference_type;
+			typedef T*							pointer;
+			typedef T const *					const_pointer;
+			typedef T&							reference;
+			typedef T const &					const_reference;
+			typedef	E							elt;
+
+		protected:
+			elt			*ptr;
+
+		public:
+			MapIterator() : ptr(NULL) {}
+			MapIterator(elt *ptr) : ptr(ptr) {}
+			MapIterator(MapIterator const &src) : ptr(src.ptr) {}
+			virtual			~MapIterator() {}
+
+			elt				*get_ptr(void) const
+			{
+				return (this->ptr);
+			}
+			MapIterator	&operator++()
+			{
+				this->ptr = this->ptr->next();
+				return (*this);
+			}
+			MapIterator	&operator--()
+			{
+				this->ptr = this->ptr->prev();
+				return (*this);
+			}
+			MapIterator	operator++(int)
+			{
+				MapIterator	stock(*this);
+				this->ptr = this->ptr->next();
+				return (stock);
+			}
+			MapIterator	operator--(int)
+			{
+				MapIterator	stock(*this);
+				this->ptr = this->ptr->prev();
+				return (stock);
+			}
+			reference		operator*()
+			{
+				return (this->ptr->value());
+			}
+			elt				*elt_ptr(void)
+			{
+				return (this->ptr);
+			}
+			const_reference		operator*() const
+			{
+				return (this->ptr->value());
+			}
+			bool		operator==(MapIterator const &rhs) const
+			{
+				return (this->ptr == rhs.ptr);
+			}
+			bool		operator!=(MapIterator const &rhs) const
+			{
+				return (this->ptr != rhs.ptr);
+			}
+			bool		operator>(MapIterator const &rhs) const
+			{
+				return (this->ptr > rhs.ptr);
+			}
+			bool		operator<(MapIterator const &rhs) const
+			{
+				return (this->ptr < rhs.ptr);
+			}
+			bool		operator>=(MapIterator const &rhs) const
+			{
+				return (this->ptr >= rhs.ptr);
+			}
+			bool		operator<=(MapIterator const &rhs) const
+			{
+				return (this->ptr <= rhs.ptr);
+			}
+	};
+
+	template <typename T, typename E>
 	class	Iterator
 	{
 		public:
@@ -62,7 +147,7 @@ namespace	ft
 			}
 			Iterator	&operator--()
 			{
-				this->ptr = this->ptr->prev();
+				this->ptr = this->prev();
 				return (*this);
 			}
 			Iterator	operator++(int)
@@ -74,7 +159,7 @@ namespace	ft
 			Iterator	operator--(int)
 			{
 				Iterator	stock(*this);
-				this->ptr = this->ptr->prev();
+				this->ptr = this->prev();
 				return (stock);
 			}
 			reference		operator*()
