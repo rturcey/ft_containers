@@ -147,7 +147,7 @@ namespace	ft
 			}
 			Iterator	&operator--()
 			{
-				this->ptr = this->prev();
+				this->ptr = this->ptr->prev();
 				return (*this);
 			}
 			Iterator	operator++(int)
@@ -159,7 +159,7 @@ namespace	ft
 			Iterator	operator--(int)
 			{
 				Iterator	stock(*this);
-				this->ptr = this->prev();
+				this->ptr = this->ptr->prev();
 				return (stock);
 			}
 			reference		operator*()

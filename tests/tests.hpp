@@ -20,6 +20,7 @@
 # define WIDTH 60
 
 #include "List.hpp"
+#include "Map.hpp"
 #include "Vector.hpp"
 #include "Stack.hpp"
 #include "Queue.hpp"
@@ -559,5 +560,31 @@ int test_queue_top_push_pop();
 int test_queue_nonMembers();
 
 //************************************************//
+
+		//*\*/*\/*\*/*\/*\*/*\/*///
+		///*\*/*\*MAP TESTS/*\*/*//
+		//*\*/*\/*\*/*\/*\*/*\/*///
+		/*   [in Map_tests.cpp]  */
+
+// CONSTRUCTORS
+int test_map_constr();
+//ITERATORS
+int test_map_iterate();
+//CAPACITY
+int test_map_empty();
+int test_map_maxSize();
+//ELEMENT ACCESS
+int test_map_oparray();
+//MODIFIERS
+int test_map_insert();
+int test_map_erase();
+int test_map_swap();
+int test_map_clear();
+//OPERATIONS
+int test_map_find();
+int test_map_count();
+int test_map_lowerBound();
+int test_map_upperBound();
+int test_map_equalRange();
 
 #endif

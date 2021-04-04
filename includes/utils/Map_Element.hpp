@@ -13,18 +13,29 @@
 #ifndef MAP_ELEMENT_HPP
 #define MAP_ELEMENT_HPP
 
+#include <cstdlib>
 #include <limits>
 
 template <typename T>
 class	Map_Element
 {
 	public:
-		Map_Element(void) : _left(NULL), _right(NULL), parent(NULL), _val() {}
-		Map_Element(const T &data) : _left(NULL), _right(NULL), parent(NULL), _val(data) {}
-		Map_Element(const T &data, Map_Element *left, Map_Element *right, Map_Element *parent) : _left(left), _right(right), parent(NULL), _val(data) {}
-		Map_Element(const T &data, Map_Element *parent) : _left(NULL), _right(NULL), parent(parent), _val(data) {}
+		Map_Element(void) : _left(NULL), _right(NULL), _parent(NULL), _val() {}
+		Map_Element(const T &data) : _left(NULL), _right(NULL), _parent(NULL), _val(data) {}
+		Map_Element(const T &data, Map_Element *left, Map_Element *right, Map_Element *parent) : _left(left), _right(right), _parent(parent), _val(data) {}
+		Map_Element(const T &data, Map_Element *parent) : _left(NULL), _right(NULL), _parent(parent), _val(data) {}
 		Map_Element(Map_Element const &src) : _left(src._left), _right(src._right), _parent(src._parent), _val(src._val) {}
 
+		Map_Element	*find(T key, Map_Element *root)
+		{
+			if (!root)
+				return (NULL);
+			if (root->_val.first == key.first)
+				return (root);
+			find(key, root->_left);
+			find(key, root->_right);
+			return (NULL);
+		}
 		Map_Element &operator=(const Map_Element &rhs)
 		{
 			this->_left = rhs._left;
@@ -32,8 +43,10 @@ class	Map_Element
 			this->_parent = rhs._parent;
 			this->_val = rhs.data;
 		}
-		Map_Element	*&next()
+		Map_Element	*next()
 		{
+			Map_Element		*ptr;
+
 			if (_left)
 				return (_left);
 			if (_right)
@@ -54,10 +67,10 @@ class	Map_Element
 			}
 			return (NULL);
 		}
-		Map_Element	*&prev()
+		Map_Element	*prev()
 		{
-			Map_Element	*&next()
-		{
+			Map_Element		*ptr;
+			
 			if (_right)
 				return (_right);
 			if (_left)
@@ -77,7 +90,6 @@ class	Map_Element
 					return (NULL);
 			}
 			return (NULL);
-		}
 		}
 		Map_Element	*&right(void)
 		{
@@ -119,7 +131,7 @@ class	Map_Element
 	private:
 		Map_Element	*_left;
 		Map_Element	*_right;
-		Map_Element	*parent;
+		Map_Element	*_parent;
 		T			_val;
 };
 
