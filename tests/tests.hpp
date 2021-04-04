@@ -432,10 +432,8 @@ template <class ft_class, class std_class>
 int chk_mapResult(ft_class ft_container, std_class std_container, std::string const &type, std::string const &func, std::string const &testInfo = "") {
 	
 	//std::cout << "in chk res : size " << ft_container.size() << std::endl;
-
 	if (ft_container.size() != std_container.size())
 		handle_mapError(ft_container, std_container, type, func, testInfo, "SIZE");
-
 	typename ft_class::iterator ft_it = ft_container.begin();
 	typename ft_class::iterator ft_ite = ft_container.end();
 	

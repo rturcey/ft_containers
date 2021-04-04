@@ -57,7 +57,7 @@ namespace	ft
 			}
 			MapIterator	&operator++()
 			{
-				this->ptr = this->ptr->next();
+				this->ptr = this->ptr->next(this->ptr);
 				return (*this);
 			}
 			MapIterator	&operator--()
@@ -68,7 +68,7 @@ namespace	ft
 			MapIterator	operator++(int)
 			{
 				MapIterator	stock(*this);
-				this->ptr = this->ptr->next();
+				this->ptr = this->ptr->next(this->ptr);
 				return (stock);
 			}
 			MapIterator	operator--(int)
@@ -77,17 +77,9 @@ namespace	ft
 				this->ptr = this->ptr->prev();
 				return (stock);
 			}
-			reference		operator*()
+			T			&operator*() const
 			{
-				return (this->ptr->value());
-			}
-			elt				*elt_ptr(void)
-			{
-				return (this->ptr);
-			}
-			const_reference		operator*() const
-			{
-				return (this->ptr->value());
+				return (ptr->value());
 			}
 			bool		operator==(MapIterator const &rhs) const
 			{

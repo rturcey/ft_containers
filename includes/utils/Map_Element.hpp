@@ -15,8 +15,9 @@
 
 #include <cstdlib>
 #include <limits>
+#include "Utils.hpp"
 
-template <typename T>
+template <class Key, typename T, class Compare = std::less<Key> >
 class	Map_Element
 {
 	public:
@@ -43,54 +44,96 @@ class	Map_Element
 			this->_parent = rhs._parent;
 			this->_val = rhs.data;
 		}
-		Map_Element	*next()
+		ft::MapIterator<T, Map_Element>	push(Map_Element *root, Map_Element **nend, Map_Element **begin, T val)
 		{
-			Map_Element		*ptr;
+			Map_Element		*stock = root;
+			Map_Element		*i = stock;
+			while (stock)
+			{
+				i = stock;
+				if (_comp(val.first, stock->_val.first))
+					stock = stock->left();
+				else
+					stock = stock->right();
+			}
+			if (_comp(val.first, i->_val.first))
+			{
+				i->_left = new Map_Element(val, i);	
+				i->_left->_parent = i;
+				stock = i->_left;
+			}
+			else
+			{
+				i->_right = new Map_Element(val, i);			
+				i->_right->_parent = i;
+				stock = i->_right;
+			}
+			while ((*begin)->_left)
+			{
+				*begin = (*begin)->_left;
+			}
+			*nend = end(root, *nend);
+			return (stock);
+		}
+		Map_Element	*next(Map_Element *e)
+		{
+			Map_Element		*ptr = e;
 
-			if (_left)
-				return (_left);
-			if (_right)
-				return (_right);
-			while (42)
+			if (ptr->_right)
 			{
-				if (_parent)
+				ptr = ptr->_right;
+				while (ptr->_left)
+					ptr = ptr->_left;
+				return (ptr);
+			}
+			else if (ptr->_parent)
+			{
+				Map_Element		*buf = ptr;
+				ptr = ptr->_parent;
+				while (!_comp(buf->_val.first, ptr->_val.first))
 				{
-					ptr = _parent;
-					while (ptr && !_right)
-						ptr = _parent;
-					if (ptr && ptr->_right)
-						return (ptr->_right);
-					return (NULL);
+					buf = ptr;
+					if (!ptr->_parent)
+						return (NULL);
+					ptr = ptr->_parent;
 				}
-				else
-					return (NULL);
+				return (ptr);
 			}
 			return (NULL);
 		}
-		Map_Element	*prev()
+		Map_Element	*prev(Map_Element *e)
 		{
-			Map_Element		*ptr;
-			
-			if (_right)
-				return (_right);
-			if (_left)
-				return (_left);
-			while (42)
+			Map_Element		*ptr = e;
+
+			if (ptr->_left)
 			{
-				if (_parent)
+				ptr = ptr->_left;
+				while (ptr->_right)
+					ptr = ptr->_right;
+				return (ptr);
+			}
+			else if (ptr->_parent)
+			{
+				Map_Element		*buf = ptr;
+				ptr = ptr->_parent;
+				while (!_comp(buf->_val.first, ptr->_val.first))
 				{
-					ptr = _parent;
-					while (ptr && !_left)
-						ptr = _parent;
-					if (ptr && ptr->_left)
-						return (ptr->_left);
-					return (NULL);
+					buf = ptr;
+					if (!ptr->_parent)
+						return (NULL);
+					ptr = ptr->_parent;
 				}
-				else
-					return (NULL);
+				return (ptr);
 			}
 			return (NULL);
 		}
+		Map_Element	*end(Map_Element *root, Map_Element *oldend) {
+
+				Map_Element *newend = root;
+				if (newend->_right && newend->_right != oldend)
+					newend = newend->_right;
+				return (newend);
+			};
 		Map_Element	*&right(void)
 		{
 			return (this->_right);
@@ -133,6 +176,7 @@ class	Map_Element
 		Map_Element	*_right;
 		Map_Element	*_parent;
 		T			_val;
+		Compare		_comp;
 };
 
 #endif

@@ -34,9 +34,9 @@ namespace	ft
 			typedef value_type const &						const_reference;
 			typedef value_type *							pointer;
 			typedef value_type const *						const_pointer;
-			typedef Map_Element<value_type>					elt;
-			typedef Iterator<value_type, elt>        		iterator;
-			typedef Iterator<value_type, elt>                   const_iterator;
+			typedef Map_Element<key_type, value_type, key_compare>	elt;
+			typedef MapIterator<value_type, elt>        		iterator;
+			typedef MapIterator<value_type, elt>                   const_iterator;
 			typedef ReverseIterator<iterator> 				reverse_iterator;
 			typedef ReverseIterator<const_iterator> 		const_reverse_iterator;
 
@@ -52,7 +52,8 @@ namespace	ft
             }
             Map(const Map &x)
             {
-				*this = x;
+				this->init();
+				insert(x.begin(), x.end());
             }
 			~Map(void)
 			{
@@ -63,6 +64,7 @@ namespace	ft
 			{
 				this->_end = new elt();
 				this->_begin = this->_end;
+				this->_root = _end;
 				this->_end->right() = NULL;
 				this->_end->left() = NULL;
 				this->_end->parent() = NULL;
@@ -71,144 +73,72 @@ namespace	ft
 			void		reset(void)
 			{
 				this->_begin = this->_end;
+				this->_root = this->_end;
 				this->_end->right() = NULL;
 				this->_end->left() = NULL;
 				this->_end->parent() = NULL;
 			}
 			iterator				find(const key_type &k)
 			{
-				Map_Element<value_type>	*elm;
+				elt		*elm;
 
-				if (!(elm = _begin->find(k)))
+				if (!(elm = _root->find(std::make_pair(k, mapped_type()), _begin)))
 					return (this->end());
 				return (iterator(elm));
 			}
 			const_iterator			find(const key_type &k) const
 			{
-				Map_Element<value_type>	*elm;
+				elt		*elm;
 
-				if (!(elm = _begin->find(k)))
+				if (!(elm = _root->find(std::make_pair(k, mapped_type()), _begin)))
 					return (this->end());
 				return (const_iterator(elm));
 			}
 			mapped_type				&operator[](const key_type &k)
 			{
-				elt		*ret;
-				if ((ret = _begin->find(k, _begin)))
-					return (ret->value());
+				iterator	it;
+				if ((it = find(k)) != end())
+					return (it.get_ptr()->value().second);
 				else
 				{
-					ret = insert(std::make_pair(k, mapped_type()));
-					return(ret->get_ptr->value());
+					it = insert(std::make_pair(k, mapped_type())).first;
+					return(it.get_ptr()->value().second);
 				}
 			}
-			std::pair<iterator, bool>	check_double_pair(const value_type& val, elt *root)
-			{
-				std::pair<iterator, bool>	ret = NULL;
-				if (!root)
-					return (std::make_pair(root, 1));
-				if (root->value().first == val.first)
-					return (std::make_pair(iterator(root), 0));
-				if ((ret = std::make_pair(check_double(val, root->left()), 0)))
-					return (ret);
-				if ((ret = std::make_pair(check_double(val, root->right()), 0)))
-					return (ret);
-			}
-			iterator				check_double(const value_type& val, elt *root)
-			{
-				iterator		ret = end();
-				if (!root)
-					return (end());
-				if (root->value().first == val.first)
-					return (iterator(root));
-				if ((ret = check_double(val, root->left())))
-					return (ret);
-				if ((ret = check_double(val, root->right())))
-					return (ret);
-			}
+			
 			std::pair<iterator, bool>	insert(const value_type& val)
 			{
-				value_type	ret;
-				if ((ret = check_double_pair(val, _begin)).second == 0)
-					return (ret);
-				elt			*it = _begin;
-				if (begin() == end())
+				iterator	ret;
+				if ((ret = find(val.first)) != end())
+					return (std::make_pair(ret, 0));
+				if (_size)
+					return (std::make_pair(_root->push(_root, &_end, &_begin, val), 1));
+				else
 				{
-					_begin = new elt(val, _end);
+					_root = new elt(val);
+					_root->right() = _end;
+					_begin = _root;
+					_end->parent() = _root;
 					_size++;
-					return (std::make_pair(iterator(val), 1));
 				}
-				while (42)
-				{
-					if (comp(val.first, it->first))
-					{
-						if (it->left)
-							it = it->left;
-						else
-						{
-							it->left = new elt(val, it);
-							_size++;
-							return (std::make_pair(iterator(val), 1));
-						}
-					}
-					else
-					{
-						if (it->right)
-							it = it->right;
-						else
-						{
-							it->right = new elt(val, it);
-							_size++;
-							return (std::make_pair(iterator(val), 1));
-						}
-					}
-				}	
+				return (std::make_pair(iterator(_root), 1));
 			}
 			iterator		insert(iterator position, const value_type &val)
 			{
-				iterator		ret;
+				elt *e;
 
-				if ((ret = check_double(val, _begin)) != end())
-					return (ret);
-				elt			it = *position;
-				if (begin() == end())
-				{
-					_begin = new elt(val, _end);
-					_size++;
-					return ;
-				}
-				while (42)
-				{
-					if (comp(val.first, it.first))
-					{
-						if (it->left)
-							it = it->left;
-						else
-						{
-							it->left = new elt(val, it);
-							_size++;
-							return ;
-						}
-					}
-					else
-					{
-						if (it->right)
-							it = it->right;
-						else
-						{
-							it->right = new elt(val, it);
-							_size++;
-							return ;
-						}
-					}
-				}	
+				if (_size && (e = _root->find(val, position.get_ptr())))
+					return (iterator(e));
+				std::pair<iterator,bool> tup = insert(val);
+				return (tup.first);
 			}
 			template< class InputIt >
 			void			insert(InputIt first, InputIt last)
 			{
-				for (iterator it = first ; it != last ; it++)
+				while (first != last)
 				{
 					this->insert(*first);
+					first++;
 				}
 			}
 			iterator	begin()
@@ -219,6 +149,14 @@ namespace	ft
 			{
 				return (iterator(this->_end));
 			}
+			const_iterator	begin() const
+			{
+				return (iterator(this->_begin));
+			}
+			const_iterator	end() const
+			{
+				return (iterator(this->_end));
+			}
 			size_t		size()
 			{
 				return (this->_size);
@@ -226,6 +164,7 @@ namespace	ft
 		private:
 			elt					*_begin;
 			elt					*_end;
+			elt					*_root;
 			size_type			_size;
 			key_compare			_comp;
 
