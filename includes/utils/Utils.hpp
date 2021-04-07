@@ -62,7 +62,7 @@ namespace	ft
 			}
 			MapIterator	&operator--()
 			{
-				this->ptr = this->ptr->prev();
+				this->ptr = this->ptr->prev(this->ptr);
 				return (*this);
 			}
 			MapIterator	operator++(int)
@@ -74,7 +74,7 @@ namespace	ft
 			MapIterator	operator--(int)
 			{
 				MapIterator	stock(*this);
-				this->ptr = this->ptr->prev();
+				this->ptr = this->ptr->prev(this->ptr);
 				return (stock);
 			}
 			T			&operator*() const

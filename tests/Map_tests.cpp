@@ -126,8 +126,6 @@ int test_map_iterate() {
 	map[1] = 20;
 	map[17] = 26;
 
-	
-/*
 	int tmp;
 	ft::Map<int, int>::iterator it = ft_map.begin();
 	while (it != ft_map.end()) {
@@ -137,30 +135,28 @@ int test_map_iterate() {
 		it++;
 	}
 	chk_mapResult(ft_map, map, "map", title);
-
 	std::cout << std::setfill('.') << std::setw(WIDTH - title.size()) << " ✓" << std::endl;
 
-	title = "[BASIC REVERSE ITERATING + DEREFERENCING]";
 	std::cout << title;
-
 	ft::Map<int, int>::reverse_iterator rit = ft_map.rbegin();
 	while (rit != ft_map.rend()) {
 		//std::cout << *it << std::endl; //commented to keep test output clean
 		tmp = (*rit).first;
 		tmp = (*rit).second;
 		rit++;
+
 	}
 	chk_mapResult(ft_map, map, "map", title);
 
 	std::cout << std::setfill('.') << std::setw(WIDTH - title.size()) << " ✓" << std::endl;
-	*/
+	
     return 0;
 };
 
 //*\*/*\/*\*/*\/*\*/*\/*\*///
 ///*\*/*\*/CAPACITY/*\*/*\*//
 //*\*/*\/*\*/*\/*\*/*\/*\*///
-/*
+
 int test_map_empty() {
 	std::string title = "[EMPTY]";
 	std::cout << title;
@@ -197,7 +193,7 @@ int test_map_empty() {
 		std::cerr << "ft_map.empty() = [" << ft_empty << "] | map.empty() = [" << std_empty << "]" << std::endl;
 		handle_mapError(ft_map, map, "map", title, "[FULL]", "CONTENT");
 	}
-
+/*
 	ft_map.clear();
 	map.clear();
 
@@ -208,7 +204,7 @@ int test_map_empty() {
 		std::cerr << "ft_map.empty() = [" << ft_empty << "] | map.empty() = [" << std_empty << "]" << std::endl;
 		handle_mapError(ft_map, map, "map", title, "[EMPTIED BY CLEAR]", "CONTENT");
 	}
-	
+	*/
 	ft::Map<char, char> ft_mapEmpty;
 	std::map<char, char> mapEmpty;
 	ft_empty = ft_mapEmpty.empty();
@@ -262,7 +258,7 @@ int test_map_maxSize() {
 	std::cout << std::setfill('.') << std::setw(WIDTH - title.size()) << " ✓" << std::endl;
 	return 0;
 }
-*/
+
 // //*\*/*\/*\*/*\/*\*/*\/*\*///
 // //*\*/ELEMENT ACCESS/*\*/*\//
 // //*\*/*\/*\*/*\/*\*/*\/*\*///
@@ -503,7 +499,7 @@ int test_map_insert() {
 	std::cout << std::setfill('.') << std::setw(WIDTH - title.size()) << " ✓" << std::endl;
 	return 0;
 };
-/*
+
 int test_map_erase() {
 	std::string title = "[ERASE(1)][POSITION]";
 	std::cout << title;
@@ -660,7 +656,7 @@ int test_map_erase() {
 	std::cout << std::setfill('.') << std::setw(WIDTH - title.size()) << " ✓" << std::endl;
 	return 0;
 };
-
+/*
 int test_map_swap() {
 	std::string title = "[SWAP]";
 	std::cout << title;

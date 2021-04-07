@@ -112,7 +112,7 @@ int main(void) {
 							//*\*/*\/*\*/*\/*\*/*\/*///
 							/*   [in Map_tests.cpp]  */
 
-	testsPtr mapTests[3] = { &test_map_constr, &test_map_iterate, &test_map_insert };
+	testsPtr mapTests[8] = { &test_map_constr, &test_map_iterate, &test_map_insert, &test_map_oparray, &test_map_empty, &test_map_maxSize, &test_map_find, &test_map_erase };
 
 	try {
 		output_title("- MAP TESTS -");

@@ -13,53 +13,53 @@
 #ifndef REVERSEITERATOR_HPP
 #define REVERSEITERATOR_HPP
 
-template <typename Iterator>
-class	ReverseIterator : public Iterator
+template <typename It>
+class	ReverseIterator : public It
 {
 	public:
-		using typename Iterator::value_type;
-		ReverseIterator(void) : Iterator() {}
-		ReverseIterator(Iterator const &iterator) : Iterator(iterator) {}
-		ReverseIterator(ReverseIterator const &src) : Iterator(src.ptr) {}
+		using typename It::value_type;
+		ReverseIterator(void) : It() {}
+		ReverseIterator(It const &iterator) : It(iterator) {}
+		ReverseIterator(ReverseIterator const &src) : It(src.ptr) {}
 
 		ReverseIterator 	&operator=(const ReverseIterator &rhs)
 		{
 			this->ptr = rhs.ptr;
 			return (*this);
 		}
-		Iterator			&operator++(void)
+		It			&operator++(void)
 		{
-			return (this->Iterator::operator--());
+			return (this->It::operator--());
 		}
-		Iterator			&operator--(void)
+		It			&operator--(void)
 		{
-			return (this->Iterator::operator++());
+			return (this->It::operator++());
 		}
 		ReverseIterator		operator++(int)
 		{
 			ReverseIterator	it(*this);
-			this->Iterator::operator--();
+			this->It::operator--();
 			return (it);
 		}
 		ReverseIterator		operator--(int)
 		{
 			ReverseIterator	it(*this);
-			this->Iterator::operator++();
+			this->It::operator++();
 			return (it);
 		}
 		value_type			*operator->(void)
 		{
-			Iterator	it(*this);
+			It	it(*this);
 			return (&(*--it));
 		}
 		value_type const	*operator->(void) const
 		{
-			Iterator	it(*this);
+			It	it(*this);
 			return (&(*--it));
 		}
 		value_type			&operator*(void)
 		{
-			Iterator	it(*this);
+			It	it(*this);
 			return (*--it);
 		}
 
