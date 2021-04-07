@@ -27,7 +27,7 @@ namespace	ft
 			typedef T												mapped_type;
             typedef Key												key_type;
             typedef std::pair<const key_type, mapped_type>			value_type;
-            typedef Compare                                			 key_compare;
+            typedef Compare                                			key_compare;
 			typedef size_t											size_type;
 			typedef std::ptrdiff_t									difference_type;
 			typedef value_type&										reference;
@@ -40,24 +40,39 @@ namespace	ft
 			typedef ReverseIterator<iterator> 						reverse_iterator;
 			typedef ReverseIterator<const_iterator> 				const_reverse_iterator;
 
-			explicit Map(const key_compare &comp = key_compare()) : _comp(comp)
+			class value_compare
+			{
+				friend class Map;
+				protected:
+  				Compare comp;
+  				value_compare (Compare c) : comp(c) {}
+				public:
+					typedef bool result_type;
+					typedef value_type first_argument_type;
+					typedef value_type second_argument_type;
+					bool operator() (const value_type& x, const value_type& y) const
+					{
+					return comp(x.first, y.first);
+					}
+			};
+			explicit Map(const key_compare &comp = key_compare()) : _comp(comp), _value_comp(comp)
             {
 				this->init();
             }
             template <class InputIterator>
-            Map(InputIterator first, InputIterator last, const key_compare &comp = key_compare()) : _comp(comp)
+            Map(InputIterator first, InputIterator last, const key_compare &comp = key_compare()) : _comp(comp), _value_comp(comp)
             {
 				this->init();
 				this->insert(first, last);
             }
-            Map(const Map &x)
+            Map(const Map &x) : _comp(x._comp), _value_comp(x._value_comp)
             {
 				this->init();
 				insert(x.begin(), x.end());
             }
 			~Map(void)
 			{
-			//	this->clear();
+				this->clear();
 				delete this->_end;
 			}
 			void		init(void)
@@ -93,6 +108,12 @@ namespace	ft
 				if (!(elm = _root->find(k, _root)))
 					return (this->end());
 				return (const_iterator(elm));
+			}
+			size_type				count(const key_type& k) const
+			{
+				if (find(k) == end())
+					return (0);
+				return (1);
 			}
 			mapped_type				&operator[](const key_type &k)
 			{
@@ -193,6 +214,79 @@ namespace	ft
 					first = find(key);
 				}
 			}
+			void		clear()
+			{
+				erase(begin(), end());
+			}
+			void		swap(Map& x)
+			{
+				elt		*ptr;
+				ptr = this->_begin;
+				this->_begin = x._begin;
+				x._begin = ptr;
+				ptr = this->_end;
+				this->_end = x._end;
+				x._end = ptr;
+				ptr = this->_root;
+				this->_root = x._root;
+				x._root = ptr;
+				size_t	size;
+				size = this->_size;
+				this->_size = x._size;
+				x._size = size;
+			}
+			iterator		lower_bound(const key_type& k)
+			{
+				iterator	it;
+
+				for (it = begin() ; it != end() ; it++)
+					if (!_comp(it.get_ptr()->value().first, k))
+						return (it);
+				return (end());
+			}
+			const_iterator lower_bound (const key_type& k) const
+			{
+				const_iterator	it;
+
+				for (it = begin() ; it != end() ; it++)
+					if (!_comp(it.get_ptr()->value().first, k))
+						return (it);
+				return (end());
+			}
+			iterator		upper_bound(const key_type& k)
+			{
+				iterator	it;
+
+				for (it = begin() ; it != end() ; it++)
+					if (_comp(k, it.get_ptr()->value().first))
+						return (it);
+				return (end());
+			}
+			const_iterator upper_bound (const key_type& k) const
+			{
+				const_iterator	it;
+
+				for (it = begin() ; it != end() ; it++)
+					if (_comp(k, it.get_ptr()->value().first))
+						return (it);
+				return (end());
+			}
+			std::pair<const_iterator,const_iterator>	equal_range(const key_type& k) const
+			{
+				return (std::make_pair(lower_bound(k), upper_bound(k)));
+			}
+			std::pair<iterator,iterator>				equal_range(const key_type& k)
+			{
+				return (std::make_pair(lower_bound(k), upper_bound(k)));
+			}
+			key_compare		key_comp() const
+			{
+				return (this->_comp);
+			}
+			value_compare	value_comp() const
+			{
+				return (this->_value_comp);
+			}
 			size_type	size() const
 			{
 				return (this->_size);
@@ -249,78 +343,15 @@ namespace	ft
 			elt					*_root;
 			size_type			_size;
 			key_compare			_comp;
+			value_compare		_value_comp;
 
 
 	};
-
-	/*template<typename T>
-	bool operator==(Map<T> const &lhs, Map<T> const &rhs)
-	{
-		if (lhs.size() != rhs.size())
-			return (0);
-		typename Map<T>::const_iterator beg = lhs.begin();
-		typename Map<T>::const_iterator itend = lhs.end();
-		typename Map<T>::const_iterator beg2 = rhs.begin();
-		typename Map<T>::const_iterator itend2 = rhs.end();
-		while (beg != itend)
-		{
-			if (*beg++ != *beg2++)
-				return (0);
-		}
-		return (1);
-	}
-	template<typename T>
-	bool operator!=(Map<T> const &lhs, Map<T> const &rhs)
-	{
-		if (lhs == rhs)
-			return (0);
-		return (1);
-	}
-	template<typename T>
-	bool operator<(Map<T> const &lhs, Map<T> const &rhs)
-	{
-		if (lhs.size() < rhs.size())
-			return (1);
-		else if (lhs.size() != rhs.size())
-			return (0);
-		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) == 1)
-			return (1);
-		return (0);
-	}
-	template<typename T>
-	bool operator>(Map<T> const &lhs, Map<T> const &rhs)
-	{
-		if (lhs.size() > rhs.size())
-			return (1);
-		else if (lhs.size() != rhs.size())
-			return (0);
-		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) == -1)
-			return (1);
-		return (0);
-	}
-	template<typename T>
-	bool operator>=(Map<T> const &lhs, Map<T> const &rhs)
-	{
-		if (lhs.size() > rhs.size())
-			return (1);
-		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) <= 0)
-			return (1);
-		return (0);
-	}
-		template<typename T>
-	bool operator<=(Map<T> const &lhs, Map<T> const &rhs)
-	{
-		if (lhs.size() < rhs.size())
-			return (1);
-		if (ft::inf(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) >= 0)
-			return (1);
-		return (0);
-	}
-	template<typename T>
-	void	swap(Map<T> &lhs, Map<T> &rhs)
+	template <class Key, typename T, class Compare>
+	void	swap(Map<Key, T, Compare> &lhs, Map<Key, T, Compare> &rhs)
 	{
 		lhs.swap(rhs);
-	}*/
+	}
 }
 
 #endif
