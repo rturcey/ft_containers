@@ -27,6 +27,7 @@
 
 #include <iomanip>
 #include <string>
+#include <cstring>
 #include <sstream>
 
 class customException : public std::exception {
@@ -389,7 +390,7 @@ void handle_error(ft_class ft_container, std_class std_container, std::string co
 			// if (type.compare(std::string("map")) == 0)
 			// 	output_map(ft_container, std_container, type, std::cerr);
 			// else
-				output_containers(ft_container, std_container, type, std::cerr);
+			output_containers(ft_container, std_container, type, std::cerr);
 			throw customException("ft_container " + errorTheme + " doesn't match std::container's!");
 };
 

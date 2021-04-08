@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/03 16:48:43 by esoulard          #+#    #+#             */
-/*   Updated: 2021/04/07 14:48:38 by rturcey          ###   ########.fr       */
+/*   Updated: 2021/04/08 21:37:01 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,18 @@ void output_title(std::string const &title) {
 	std::cout << std::string((WIDTH - title.size())/2, ' ') << std::string(title.size(), '-') << std::endl;
 }
 
-int main(void) { 
+int main(void) {
 
 							//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
 							///*\*/*\*/*\LIST TESTS/*\*/*\*//
 							//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
 							/*     [in List_tests.cpp]     */
 
-	testsPtr listTests[25] = { &test_list_fillConstr, &test_list_rangeConstr, &test_list_copyConstr, &test_list_opEqual, 
-							&test_list_pushBack_iterate, &test_list_empty, &test_list_maxSize, &test_list_front_back, 
-                        	&test_list_assign, &test_list_pushFront, &test_list_popFront, &test_list_popBack, &test_list_insert, 
-                       	 	&test_list_erase, &test_list_swap, &test_list_resize, &test_list_clear, &test_list_splice, 
-                        	&test_list_remove, &test_list_removeIf, &test_list_unique, &test_list_merge, &test_list_sort, 
+	testsPtr listTests[25] = { &test_list_fillConstr, &test_list_rangeConstr, &test_list_copyConstr, &test_list_opEqual,
+							&test_list_pushBack_iterate, &test_list_empty, &test_list_maxSize, &test_list_front_back,
+                        	&test_list_assign, &test_list_pushFront, &test_list_popFront, &test_list_popBack, &test_list_insert,
+                       	 	&test_list_erase, &test_list_swap, &test_list_resize, &test_list_clear, &test_list_splice,
+                        	&test_list_remove, &test_list_removeIf, &test_list_unique, &test_list_merge, &test_list_sort,
 							&test_list_reverse, &test_list_nonMembers, };
 
 	try {
@@ -53,10 +53,10 @@ int main(void) {
 							//*\*/*\/*\*/*\/*\*/*\/*\*/*\*///
 							/*    [in Vector_tests.cpp]    */
 
-	testsPtr vectorTests[20] = { &test_vector_fillConstr, &test_vector_rangeConstr, &test_vector_copyConstr, &test_vector_opEqual, 
-							&test_vector_pushBack_iterate, &test_vector_maxSize, &test_vector_capacity, &test_vector_empty, 
-							&test_vector_resize, &test_vector_reserve, &test_vector_oparray, &test_vector_at, &test_vector_front_back, 
-							&test_vector_assign, &test_vector_popBack, &test_vector_insert, &test_vector_erase, &test_vector_swap, 
+	testsPtr vectorTests[20] = { &test_vector_fillConstr, &test_vector_rangeConstr, &test_vector_copyConstr, &test_vector_opEqual,
+							&test_vector_pushBack_iterate, &test_vector_maxSize, &test_vector_capacity, &test_vector_empty,
+							&test_vector_resize, &test_vector_reserve, &test_vector_oparray, &test_vector_at, &test_vector_front_back,
+							&test_vector_assign, &test_vector_popBack, &test_vector_insert, &test_vector_erase, &test_vector_swap,
 							&test_vector_clear, &test_vector_nonMembers, };
 
 	try {
@@ -112,9 +112,9 @@ int main(void) {
 							//*\*/*\/*\*/*\/*\*/*\/*///
 							/*   [in Map_tests.cpp]  */
 
-	testsPtr mapTests[14] = { &test_map_constr, &test_map_iterate, &test_map_empty, &test_map_maxSize, &test_map_oparray,
+	testsPtr mapTests[14] = { &test_map_constr, &test_map_iterate, &test_map_empty, &test_map_oparray,
 							&test_map_insert, &test_map_erase, &test_map_swap, &test_map_clear, &test_map_find,
-							&test_map_count, &test_map_lowerBound, &test_map_upperBound, &test_map_equalRange, };
+							&test_map_count, &test_map_lowerBound, &test_map_upperBound, &test_map_equalRange, &test_map_maxSize};
 
 	try {
 		output_title("- MAP TESTS -");

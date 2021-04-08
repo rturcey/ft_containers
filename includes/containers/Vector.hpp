@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/04 09:32:26 by rturcey           #+#    #+#             */
-/*   Updated: 2021/04/07 14:48:17 by rturcey          ###   ########.fr       */
+/*   Updated: 2021/04/08 21:36:30 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,7 +288,7 @@ namespace	ft
 			{
 				size_type		cut = (last - first);
 				iterator		it = first;
-				
+
 				it++;
 				if (it == this->end())
 					*first = T();
@@ -337,10 +337,7 @@ namespace	ft
 			template <class InputIt>
 			void			assign(InputIt first, InputIt last)
 			{
-				size_type	cp = _capacity;
 				this->clear();
-				this->_vector = new T[cp];
-				_capacity = cp;
 				while (first != last)
 				{
 					this->push_back(*first);
@@ -351,7 +348,8 @@ namespace	ft
 			{
 				size_type	cp = _capacity;
 				this->clear();
-				this->_vector = new T[cp];
+				if (count)
+					this->_vector = new T[cp];
 				_capacity = cp;
 				for (size_type i = 0 ; i < count ; i++)
 					this->push_back(value);
@@ -468,14 +466,14 @@ namespace	ft
 				if (pos < 0 || pos > _size - 1)
 					throw std::out_of_range("vector");
 				return (this->_vector[pos]);
-				
+
 			}
 			const_reference at(size_type pos) const
 			{
 				if (pos < 0 || pos > _size - 1)
 					throw std::out_of_range("vector");
 				return (this->_vector[pos]);
-				
+
 			}
 			T const	operator[](size_type pos) const
 			{
